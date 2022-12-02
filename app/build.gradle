@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace 'com.example.mywatchlist'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.example.mywatchlist"
@@ -60,4 +60,8 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
+
+    // added
+    implementation ("androidx.compose.material3:material3:$material3_version")
+    implementation ("androidx.compose.material3:material3-window-size-class:$material3_version")
 }
