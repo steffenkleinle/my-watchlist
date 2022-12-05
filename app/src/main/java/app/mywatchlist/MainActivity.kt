@@ -1,4 +1,4 @@
-package com.example.mywatchlist
+package app.mywatchlist
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import com.example.mywatchlist.ui.theme.MyWatchlistTheme
+import app.mywatchlist.ui.theme.MyWatchlistTheme
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 

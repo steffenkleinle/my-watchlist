@@ -1,4 +1,4 @@
-package com.example.mywatchlist.ui.theme
+package app.mywatchlist.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme

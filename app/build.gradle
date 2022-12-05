@@ -4,13 +4,13 @@ plugins {
 }
 
 android {
-    namespace 'com.example.mywatchlist'
+    namespace 'app.mywatchlist'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.mywatchlist"
+        applicationId "app.mywatchlist"
         minSdk 29
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
