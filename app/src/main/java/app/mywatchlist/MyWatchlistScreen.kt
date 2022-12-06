@@ -18,14 +18,8 @@ fun MyWatchlistScreen(navController: NavController){
     Box(modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center)
     {
-        Text(text = "MyWatchlist",
-            modifier = Modifier.clickable {
-                navController.navigate(Screen.Profile.route){
-                    popUpTo(Screen.Profile.route){
-                        inclusive = true
-                    }
-                }
-            },
+        Text(
+            text = "MyWatchlist",
             color = MaterialTheme.colors.secondary,
             fontSize = MaterialTheme.typography.h3.fontSize,
             fontWeight = FontWeight.Bold

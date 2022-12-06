@@ -9,13 +9,10 @@ import androidx.navigation.compose.rememberNavController
 
 class MainActivity : ComponentActivity() {
 
-    //lateinit var navController: NavHostController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MainScreen()
-            //navController = rememberNavController()
-            //SetupNavGraph(navController = navController)
             }
         }
     }
