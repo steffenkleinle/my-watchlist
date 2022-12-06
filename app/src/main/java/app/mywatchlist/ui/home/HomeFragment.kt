@@ -13,6 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import app.mywatchlist.databinding.FragmentHomeBinding
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
@@ -32,8 +33,8 @@ class HomeFragment : Fragment() {
         val textView: TextView = binding.textHome
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                homeViewModel.uiState.map { it.watchables }.distinctUntilChanged().collect {
-                    // Update UI elements
+                homeViewModel.uiState.map { it.watchables }.distinctUntilChanged().collect { uiState ->
+                    println(uiState)
                 }
             }
         }

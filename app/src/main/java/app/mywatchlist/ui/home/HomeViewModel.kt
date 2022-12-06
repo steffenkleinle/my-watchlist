@@ -18,7 +18,11 @@ class HomeViewModel : ViewModel() {
 
     private var fetchJob: Job? = null
 
-    fun fetchTrending() {
+    init {
+        fetchTrending()
+    }
+
+    private fun fetchTrending() {
         fetchJob?.cancel()
         fetchJob = viewModelScope.launch {
             try {
