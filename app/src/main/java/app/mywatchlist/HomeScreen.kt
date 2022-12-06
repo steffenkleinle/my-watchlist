@@ -18,10 +18,8 @@ fun HomeScreen(navController: NavController){
     Box(modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center)
     {
-        Text(text = "Home",
-            modifier = Modifier.clickable {
-                navController.navigate(route = Screen.Details.passId(11))
-            },
+        Text(
+            text = "Home",
             color = MaterialTheme.colors.primary,
             fontSize = MaterialTheme.typography.h3.fontSize,
             fontWeight = FontWeight.Bold

@@ -16,14 +16,8 @@ fun DetailScreen(navController: NavController){
     Box(modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center)
     {
-        Text(text = "Details",
-            modifier = Modifier.clickable {
-                navController.navigate(Screen.Home.route){
-                    popUpTo(Screen.Home.route){
-                        inclusive = true
-                    }
-                }
-            },
+        Text(
+            text = "Details",
             color = MaterialTheme.colors.primary,
             fontSize = MaterialTheme.typography.h3.fontSize,
             fontWeight = FontWeight.Bold
