@@ -22,16 +22,16 @@ fun MainScreen(){
     Scaffold(
         bottomBar = { BottomBar(navController = navController) }
     ) {
-        BottomNavGraph(navController = navController)
+        SetupNavGraph(navController = navController)
     }
 }
 
 @Composable
 fun BottomBar(navController: NavHostController){
     val screens = listOf(
-        BottomBarScreen.Home,
-        BottomBarScreen.MyWatchlist,
-        BottomBarScreen.Profile
+        Screen.Home,
+        Screen.MyWatchlist,
+        Screen.Profile
     )
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
