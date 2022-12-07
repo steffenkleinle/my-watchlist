@@ -2,16 +2,19 @@ package app.mywatchlist
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.graphics.vector.ImageVector
+
+const val DETAIL_ARGUMENT_KEY = "id"
 
 sealed class BottomBarScreen(
     val route: String,
     val title: String,
     val icon: ImageVector
-)  {
+)
+
+sealed class Screen(val route: String){
     object Home: BottomBarScreen(
         "movies",
         "Movies",
@@ -27,4 +30,9 @@ sealed class BottomBarScreen(
         "Profile",
         Icons.Default.Person
     )
+    object Details: Screen(route = "detail_screen/{$DETAIL_ARGUMENT_KEY}"){
+        fun passId(id: Int): String {
+            return this.route.replace(oldValue = "{$DETAIL_ARGUMENT_KEY}", newValue = id.toString())
+        }
+    }
 }
