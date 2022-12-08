@@ -26,9 +26,12 @@ class HomeViewModel : ViewModel() {
         fetchJob?.cancel()
         fetchJob = viewModelScope.launch {
             try {
-                val watchables = TmdbApi.service.getTrending()
+                val response = TmdbApi.service.getTrending()
                 _uiState.update {
-                    it.copy(watchables = watchables)
+                    println(response.body())
+                    println(response.code())
+                    println(response)
+                    it.copy(watchables = response.body()?.watchables ?: listOf())
                 }
             } catch (ioe: IOException) {
                 // TODO Add error handling
