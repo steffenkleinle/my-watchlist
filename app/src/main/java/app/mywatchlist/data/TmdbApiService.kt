@@ -38,7 +38,7 @@ private val retrofit = Retrofit.Builder()
 
 interface TmdbApiService {
     @GET("trending/movie/week$API_KEY_QUERY_PARAM")
-    suspend fun getTrending() : Response<Watchables>
+    suspend fun getTrending(): Response<Watchables>
 }
 
 object TmdbApi {
