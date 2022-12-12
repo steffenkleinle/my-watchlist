@@ -2,6 +2,7 @@ package app.mywatchlist.data
 
 import app.mywatchlist.BuildConfig
 import com.squareup.moshi.FromJson
+import com.squareup.moshi.Json
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.ToJson
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -10,12 +11,17 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 
 private const val BASE_URL = "https://api.themoviedb.org/3/"
 private const val API_KEY_QUERY_PARAM = "?api_key=${BuildConfig.TMDB_API_KEY}"
+
+data class Results<T>(
+    @Json val results: T
+)
 
 private class DateJsonAdapter {
     @FromJson
@@ -38,20 +44,18 @@ private val retrofit = Retrofit.Builder()
 
 
 interface TmdbApiService {
-    @GET("trending/{watchable_type}/week$API_KEY_QUERY_PARAM")
-    suspend fun getTrending(@Path("watchable_type") watchableType: WatchableType = WatchableType.movie): Response<Watchables>
+    @GET("trending/movie/week$API_KEY_QUERY_PARAM")
+    suspend fun getTrending(): Response<Results<List<Watchable>>>
 
-    @GET("{watchable_type}/{watchable_id}$API_KEY_QUERY_PARAM")
-    suspend fun getDetails(
-        @Path("watchable_type") watchableType: WatchableType = WatchableType.movie,
-        @Path("watchable_id") watchableId: Int
-    ): Response<Watchable>
+    @GET("movie/{watchable_id}$API_KEY_QUERY_PARAM")
+    suspend fun getDetails(@Path("watchable_id") watchableId: Int): Response<Watchable>
 
-    @GET("{watchable_type}/{watchable_id}/watch/providers$API_KEY_QUERY_PARAM")
-    suspend fun getProviders(
-        @Path("watchable_type") watchableType: WatchableType = WatchableType.movie,
-        @Path("watchable_id") watchableId: Int
-    ): Response<CountryProviders>
+    @GET("movie/{watchable_id}/watch/providers$API_KEY_QUERY_PARAM")
+    suspend fun getProviders(@Path("watchable_id") watchableId: Int): Response<Results<Map<String, Providers>>>
+
+    @GET("watch/providers/movie$API_KEY_QUERY_PARAM")
+    suspend fun getProviders(@Query("watch_region") country: String): Response<Results<List<Provider>>>
+
 }
 
 object TmdbApi {

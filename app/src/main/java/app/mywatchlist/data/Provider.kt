@@ -13,7 +13,3 @@ data class Providers(
     @Json val flatrate: List<Provider>?,
     @Json val rent: List<Provider>?
 )
-
-data class CountryProviders(
-    @Json(name = "results") val providers: Map<String, Providers>
-)

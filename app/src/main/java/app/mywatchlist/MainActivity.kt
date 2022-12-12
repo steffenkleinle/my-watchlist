@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
         val homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                homeViewModel.uiState.map { it.watchables }.distinctUntilChanged()
+                homeViewModel.uiState.map { it }.distinctUntilChanged()
                     .collect { uiState ->
                         println(uiState)
                     }
