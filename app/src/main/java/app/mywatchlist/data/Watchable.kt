@@ -9,7 +9,8 @@ data class Watchable(
     @Json(name = "original_title") val originalTitle: String,
     @Json val overview: String,
     @Json(name = "media_type") val type: String,
-    @Json(name = "poster_path") val poster: String,
+    @Json(name = "poster_path") val posterPath: String,
+    @Json(name = "backdrop_path") val backdropPath: String,
     @Json(name = "release_date") val releaseDate: LocalDate,
     @Json(name = "vote_average") val voteAverage: Float,
     @Json(name = "vote_count") val voteCount: Int
