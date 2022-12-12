@@ -20,3 +20,7 @@ data class Watchable(
     @Json(name = "vote_count") val voteCount: Int,
     val providers: Map<String, Providers>? = null
 )
+
+data class Watchables(
+    @Json(name = "results") val watchables: List<Watchable>
+)
