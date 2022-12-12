@@ -9,6 +9,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -37,8 +38,20 @@ private val retrofit = Retrofit.Builder()
 
 
 interface TmdbApiService {
-    @GET("trending/movie/week$API_KEY_QUERY_PARAM")
-    suspend fun getTrending(): Response<Watchables>
+    @GET("trending/{watchable_type}/week$API_KEY_QUERY_PARAM")
+    suspend fun getTrending(@Path("watchable_type") watchableType: WatchableType = WatchableType.movie): Response<Watchables>
+
+    @GET("{watchable_type}/{watchable_id}$API_KEY_QUERY_PARAM")
+    suspend fun getDetails(
+        @Path("watchable_type") watchableType: WatchableType = WatchableType.movie,
+        @Path("watchable_id") watchableId: Int
+    ): Response<Watchable>
+
+    @GET("{watchable_type}/{watchable_id}/watch/providers$API_KEY_QUERY_PARAM")
+    suspend fun getProviders(
+        @Path("watchable_type") watchableType: WatchableType = WatchableType.movie,
+        @Path("watchable_id") watchableId: Int
+    ): Response<CountryProviders>
 }
 
 object TmdbApi {
