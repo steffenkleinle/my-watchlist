@@ -20,20 +20,14 @@ import androidx.navigation.compose.rememberNavController
 fun MainScreen(){
     val navController = rememberNavController()
     Scaffold(
-<<<<<<< HEAD
         bottomBar = { BottomBar(navController) }
     ) {
         SetupNavGraph(navController)
-=======
-        bottomBar = { BottomBar(navController = navController) }
-    ) {
-        SetupNavGraph(navController = navController)
->>>>>>> 4393578ae54a136a9843bf2b6833e69a40c52c2e
     }
 }
 
 @Composable
-fun BottomBar(navController: NavHostController){
+fun BottomBar(navController: NavHostController) {
     val screens = listOf(
         Screen.Home,
         Screen.MyWatchlist,
@@ -44,44 +38,30 @@ fun BottomBar(navController: NavHostController){
 
     BottomNavigation {
         screens.forEach { screen ->
-<<<<<<< HEAD
             AddItem(screen, currentDestination, navController)
-=======
-            AddItem(screen = screen, currentDestination = currentDestination, navController = navController)
->>>>>>> 4393578ae54a136a9843bf2b6833e69a40c52c2e
         }
     }
 }
 
 @Composable
-<<<<<<< HEAD
-private fun RowScope.AddItem(
-=======
+
 fun RowScope.AddItem(
->>>>>>> 4393578ae54a136a9843bf2b6833e69a40c52c2e
     screen: BottomBarScreen,
     currentDestination: NavDestination?,
     navController: NavHostController
-){
+) {
     BottomNavigationItem(
         label = {
-<<<<<<< HEAD
             Text(screen.title)
         },
         icon = {
             Icon(screen.icon, "navigation_icon")
-=======
-            Text(text = screen.title)
         },
-        icon = {
-            Icon(imageVector = screen.icon, contentDescription = "navigation_icon")
->>>>>>> 4393578ae54a136a9843bf2b6833e69a40c52c2e
-        },
-        selected = currentDestination?.hierarchy?.any{
+        selected = currentDestination?.hierarchy?.any {
             it.route == screen.route
         } == true,
         onClick = {
-            navController.navigate(screen.route){
+            navController.navigate(screen.route) {
                 popUpTo(navController.graph.findStartDestination().id)
                 launchSingleTop = true
             }

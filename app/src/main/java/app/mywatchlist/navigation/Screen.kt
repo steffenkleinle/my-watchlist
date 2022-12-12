@@ -30,15 +30,10 @@ sealed class Screen(val route: String){
         "Profile",
         Icons.Default.Person
     )
-<<<<<<< HEAD
+
     object Details: Screen("detail_screen/{$DETAIL_ARGUMENT_KEY}"){
         fun passId(id: Int): String {
             return this.route.replace("{$DETAIL_ARGUMENT_KEY}", id.toString())
-=======
-    object Details: Screen(route = "detail_screen/{$DETAIL_ARGUMENT_KEY}"){
-        fun passId(id: Int): String {
-            return this.route.replace(oldValue = "{$DETAIL_ARGUMENT_KEY}", newValue = id.toString())
->>>>>>> 4393578ae54a136a9843bf2b6833e69a40c52c2e
         }
     }
 }
