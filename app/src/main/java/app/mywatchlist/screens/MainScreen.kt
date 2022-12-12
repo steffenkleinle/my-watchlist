@@ -20,9 +20,9 @@ import androidx.navigation.compose.rememberNavController
 fun MainScreen(){
     val navController = rememberNavController()
     Scaffold(
-        bottomBar = { BottomBar(navController = navController) }
+        bottomBar = { BottomBar(navController) }
     ) {
-        SetupNavGraph(navController = navController)
+        SetupNavGraph(navController)
     }
 }
 
@@ -38,23 +38,23 @@ fun BottomBar(navController: NavHostController){
 
     BottomNavigation {
         screens.forEach { screen ->
-            AddItem(screen = screen, currentDestination = currentDestination, navController = navController)
+            AddItem(screen, currentDestination, navController)
         }
     }
 }
 
 @Composable
-fun RowScope.AddItem(
+private fun RowScope.AddItem(
     screen: BottomBarScreen,
     currentDestination: NavDestination?,
     navController: NavHostController
 ){
     BottomNavigationItem(
         label = {
-            Text(text = screen.title)
+            Text(screen.title)
         },
         icon = {
-            Icon(imageVector = screen.icon, contentDescription = "navigation_icon")
+            Icon(screen.icon, "navigation_icon")
         },
         selected = currentDestination?.hierarchy?.any{
             it.route == screen.route
