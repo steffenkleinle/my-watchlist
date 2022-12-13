@@ -1,12 +1,14 @@
 package app.mywatchlist
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.FilledTonalIconButton
@@ -16,6 +18,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,12 +44,18 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel = view
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Text(
+                text = "Trending",
+                color = MaterialTheme.colors.primary,
+                fontSize = MaterialTheme.typography.h4.fontSize,
+                fontWeight = FontWeight.Bold
+            )
             uiState.watchables.ifEmpty {
                 Text(text = "loading...")
             }
             LazyVerticalGrid(columns = GridCells.Fixed(2),
                 content = {
-                    items(uiState.watchables) { watchable -> MovieCard(watchable) }
+                    items(uiState.watchables) { watchable -> MovieCard(navController, watchable) }
                 })
         }
     }
@@ -61,8 +70,11 @@ fun HomeScreenPreview() {
 }
 
 @Composable
-fun MovieCard(watchable: Watchable) {
-    Card(modifier = Modifier.padding(4.dp)) {
+fun MovieCard(navController: NavController, watchable: Watchable) {
+    Card(modifier = Modifier.padding(4.dp)
+            .clickable {
+        navController.navigate(route = Screen.Details.passId(watchable.id))
+    },) {
         AsyncImage(
             model = "https://image.tmdb.org/t/p/original/" + watchable.posterPath,
             contentDescription = null
@@ -73,7 +85,7 @@ fun MovieCard(watchable: Watchable) {
                 .fillMaxWidth()
                 .padding(10.dp),
         ) {
-            FilledTonalIconButton(onClick = { /* doSomething() */ }) {
+            FilledTonalIconButton(onClick = { /*Do sth*/  }) {
                 Icon(
                     Icons.Outlined.Add, contentDescription = "Add to myWatchlist",
                     modifier = Modifier.padding(3.dp)

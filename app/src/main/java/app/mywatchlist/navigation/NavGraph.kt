@@ -28,7 +28,7 @@ fun SetupNavGraph(navController: NavHostController, homeViewModel: HomeViewModel
             )
         ){
             Log.d("Args", it.arguments?.getInt(DETAIL_ARGUMENT_KEY).toString())
-            DetailScreen(navController)
+            DetailScreen(navController, it.arguments?.getInt(DETAIL_ARGUMENT_KEY).toString())
         }
         composable(
             route = Screen.MyWatchlist.route
