@@ -6,9 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.FilledTonalIconButton
@@ -18,6 +16,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,6 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import app.mywatchlist.data.Watchable
 import app.mywatchlist.ui.home.HomeViewModel
 import coil.compose.AsyncImage
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 
 @Composable
@@ -35,23 +36,44 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel = view
     val uiState by homeViewModel.uiState.collectAsState()
     Log.d("Home Screen UI State: ", uiState.watchables.toString())
 
+    var searchInput: String = ""
+
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .padding(0.dp, 10.dp, 0.dp, 70.dp),
-        contentAlignment = Alignment.Center,
+
     )
     {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.Top
         ) {
             Text(
+                modifier = Modifier
+                    .padding(5.dp, 0.dp, 5.dp, 10.dp),
                 text = "Trending",
                 color = MaterialTheme.colors.primary,
                 fontSize = MaterialTheme.typography.h4.fontSize,
                 fontWeight = FontWeight.Bold
             )
+//            TextField(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(5.dp, 0.dp, 5.dp, 0.dp),
+//                value = searchInput,
+//                onValueChange = { searchInput = it },
+//                label = { Text("Search") }
+//            )
             uiState.watchables.ifEmpty {
-                Text(text = "loading...")
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    LinearProgressIndicator(
+                        modifier = Modifier
+                            .semantics(mergeDescendants = true) {}
+                            .fillMaxWidth(),
+                    )
+                }
             }
             LazyVerticalGrid(columns = GridCells.Fixed(2),
                 content = {
@@ -71,13 +93,15 @@ fun HomeScreenPreview() {
 
 @Composable
 fun MovieCard(navController: NavController, watchable: Watchable) {
-    Card(modifier = Modifier.padding(4.dp)
-            .clickable {
-        navController.navigate(route = Screen.Details.passId(watchable.id))
-    },) {
+    Card(modifier = Modifier
+        .padding(4.dp)
+        .clickable {
+            navController.navigate(route = Screen.Details.passId(watchable.id))
+        },) {
         AsyncImage(
             model = "https://image.tmdb.org/t/p/original/" + watchable.posterPath,
-            contentDescription = null
+            contentDescription = watchable.title,
+            placeholder = painterResource(R.drawable.blank_movie_poster),
         )
         Row(
             horizontalArrangement = Arrangement.End,
