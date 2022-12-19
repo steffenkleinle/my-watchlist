@@ -18,6 +18,8 @@ import java.util.*
 
 private const val BASE_URL = "https://api.themoviedb.org/3/"
 private const val API_KEY_QUERY_PARAM = "?api_key=${BuildConfig.TMDB_API_KEY}"
+private const val REGION = "US"
+private const val LANGUAGE = "en-$REGION"
 
 data class Results<T>(
     @Json val results: T
@@ -45,17 +47,29 @@ private val retrofit = Retrofit.Builder()
 
 interface TmdbApiService {
     @GET("trending/movie/week$API_KEY_QUERY_PARAM")
-    suspend fun getTrending(): Response<Results<List<Watchable>>>
+    suspend fun getTrending(@Query("language") language: String = LANGUAGE): Response<Results<List<Watchable>>>
 
-    @GET("movie/{watchable_id}$API_KEY_QUERY_PARAM")
-    suspend fun getDetails(@Path("watchable_id") watchableId: Int): Response<Watchable>
+    @GET("movie/{id}$API_KEY_QUERY_PARAM")
+    suspend fun getDetails(
+        @Path("id") id: Int,
+        @Query("language") language: String = LANGUAGE
+    ): Response<Watchable>
 
-    @GET("movie/{watchable_id}/watch/providers$API_KEY_QUERY_PARAM")
-    suspend fun getProviders(@Path("watchable_id") watchableId: Int): Response<Results<Map<String, Providers>>>
+    @GET("search/movie$API_KEY_QUERY_PARAM")
+    suspend fun search(
+        @Query("query") query: String,
+        @Query("language") language: String = LANGUAGE,
+        @Query("region") region: String = REGION
+    ): Response<Results<List<Watchable>>>
+
+    @GET("movie/{id}/watch/providers$API_KEY_QUERY_PARAM")
+    suspend fun getProviders(@Path("id") id: Int): Response<Results<Map<String, Providers>>>
 
     @GET("watch/providers/movie$API_KEY_QUERY_PARAM")
-    suspend fun getProviders(@Query("watch_region") country: String): Response<Results<List<Provider>>>
-
+    suspend fun getProviders(
+        @Query("language") language: String = LANGUAGE,
+        @Query("watch_region") region: String = REGION
+    ): Response<Results<List<Provider>>>
 }
 
 object TmdbApi {
