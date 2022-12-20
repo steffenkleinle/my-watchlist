@@ -7,7 +7,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import app.mywatchlist.ui.home.HomeViewModel
+import app.mywatchlist.ui.viewModels.WatchablesViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -17,10 +17,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+        val watchablesViewModel = ViewModelProvider(this)[WatchablesViewModel::class.java]
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                homeViewModel.uiState.map { it }.distinctUntilChanged()
+                watchablesViewModel.uiState.map { it }.distinctUntilChanged()
                     .collect { uiState ->
                         println("UI State: " + uiState)
                     }

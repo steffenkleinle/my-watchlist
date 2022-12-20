@@ -1,6 +1,9 @@
 package app.mywatchlist.data
 
 import app.mywatchlist.BuildConfig
+import app.mywatchlist.data.models.Provider
+import app.mywatchlist.data.models.Providers
+import app.mywatchlist.data.models.Watchable
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.Json
 import com.squareup.moshi.Moshi
