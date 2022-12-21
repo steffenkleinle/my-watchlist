@@ -14,24 +14,26 @@ sealed class BottomBarScreen(
     val icon: ImageVector
 )
 
-sealed class Screen(val route: String){
-    object Home: BottomBarScreen(
+sealed class Screen(val route: String) {
+    object Home : BottomBarScreen(
         "movies",
         "Movies",
         Icons.Default.Home
     )
-    object MyWatchlist: BottomBarScreen(
+
+    object MyWatchlist : BottomBarScreen(
         "myWatchlist",
         "My Watchlist",
         Icons.Default.Star
     )
-    object Profile: BottomBarScreen(
+
+    object Profile : BottomBarScreen(
         "profile",
         "Profile",
         Icons.Default.Person
     )
 
-    object Details: Screen("detail_screen/{$DETAIL_ARGUMENT_KEY}"){
+    object Details : Screen("detail_screen/{$DETAIL_ARGUMENT_KEY}") {
         fun passId(id: Int): String {
             return this.route.replace("{$DETAIL_ARGUMENT_KEY}", id.toString())
         }

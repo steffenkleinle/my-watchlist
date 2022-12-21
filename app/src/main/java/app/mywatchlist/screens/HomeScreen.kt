@@ -1,4 +1,4 @@
-package app.mywatchlist
+package app.mywatchlist.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -13,15 +13,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import app.mywatchlist.Screen
 
 @Composable
-fun HomeScreen(navController: NavController){
-    Box(modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,)
+fun HomeScreen(navController: NavController) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    )
     {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
+        ) {
             Text(
                 text = "Home",
                 color = MaterialTheme.colors.primary,
@@ -31,7 +34,7 @@ fun HomeScreen(navController: NavController){
             Text(
                 text = "Details",
                 modifier = Modifier.clickable {
-                      navController.navigate(route = Screen.Details.passId(420))
+                    navController.navigate(route = Screen.Details.passId(420))
                 },
                 color = MaterialTheme.colors.secondary,
                 fontSize = MaterialTheme.typography.h5.fontSize
@@ -42,7 +45,7 @@ fun HomeScreen(navController: NavController){
 
 @Preview(showBackground = true)
 @Composable
-fun HomeScreenPreview(){
+fun HomeScreenPreview() {
     HomeScreen(
         navController = rememberNavController()
     )
