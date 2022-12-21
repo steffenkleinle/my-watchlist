@@ -2,20 +2,22 @@ package app.mywatchlist
 
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import app.mywatchlist.ui.home.HomeViewModel
 
 
 @Composable
-fun SetupNavGraph(navController: NavHostController){
+fun SetupNavGraph(navController: NavHostController, homeViewModel: HomeViewModel = viewModel()){
     NavHost(navController = navController, startDestination = Screen.Home.route){
         composable(
             route = Screen.Home.route
         ){
-            HomeScreen(navController)
+            HomeScreen(navController, homeViewModel)
         }
         composable(
             route = Screen.Details.route,
@@ -26,7 +28,7 @@ fun SetupNavGraph(navController: NavHostController){
             )
         ){
             Log.d("Args", it.arguments?.getInt(DETAIL_ARGUMENT_KEY).toString())
-            DetailScreen(navController)
+            DetailScreen(navController, it.arguments?.getInt(DETAIL_ARGUMENT_KEY).toString())
         }
         composable(
             route = Screen.MyWatchlist.route

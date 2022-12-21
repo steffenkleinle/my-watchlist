@@ -22,13 +22,13 @@ class MainActivity : ComponentActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 homeViewModel.uiState.map { it }.distinctUntilChanged()
                     .collect { uiState ->
-                        println(uiState)
+                        println("UI State: " + uiState)
                     }
             }
         }
 
         setContent {
-            MainScreen()
+            MainScreen(homeViewModel)
         }
     }
 }
