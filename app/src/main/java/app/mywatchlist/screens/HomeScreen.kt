@@ -6,7 +6,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.LinearProgressIndicator
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.FilledTonalIconButton
@@ -19,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -28,13 +30,12 @@ import androidx.navigation.compose.rememberNavController
 import app.mywatchlist.data.Watchable
 import app.mywatchlist.ui.home.HomeViewModel
 import coil.compose.AsyncImage
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 
 @Composable
 fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel = viewModel()) {
     val uiState by homeViewModel.uiState.collectAsState()
-    Log.d("Home Screen UI State: ", uiState.watchables.toString())
+    Log.d("Home Screen UI State: ", uiState.toString())
 
     var searchInput: String = ""
 
@@ -43,7 +44,7 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel = view
             .fillMaxSize()
             .padding(0.dp, 10.dp, 0.dp, 70.dp),
 
-    )
+        )
     {
         Column(
             modifier = Modifier
@@ -66,7 +67,7 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel = view
 //                onValueChange = { searchInput = it },
 //                label = { Text("Search") }
 //            )
-            uiState.watchables.ifEmpty {
+            uiState.ifEmpty {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     LinearProgressIndicator(
                         modifier = Modifier
@@ -77,7 +78,7 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel = view
             }
             LazyVerticalGrid(columns = GridCells.Fixed(2),
                 content = {
-                    items(uiState.watchables) { watchable -> MovieCard(navController, watchable) }
+                    items(uiState) { watchable -> MovieCard(navController, watchable) }
                 })
         }
     }
@@ -93,11 +94,13 @@ fun HomeScreenPreview() {
 
 @Composable
 fun MovieCard(navController: NavController, watchable: Watchable) {
-    Card(modifier = Modifier
-        .padding(4.dp)
-        .clickable {
-            navController.navigate(route = Screen.Details.passId(watchable.id))
-        },) {
+    Card(
+        modifier = Modifier
+            .padding(4.dp)
+            .clickable {
+                navController.navigate(route = Screen.Details.passId(watchable.id))
+            },
+    ) {
         AsyncImage(
             model = "https://image.tmdb.org/t/p/original/" + watchable.posterPath,
             contentDescription = watchable.title,
@@ -109,7 +112,7 @@ fun MovieCard(navController: NavController, watchable: Watchable) {
                 .fillMaxWidth()
                 .padding(10.dp),
         ) {
-            FilledTonalIconButton(onClick = { /*Do sth*/  }) {
+            FilledTonalIconButton(onClick = { /*Do sth*/ }) {
                 Icon(
                     Icons.Outlined.Add, contentDescription = "Add to myWatchlist",
                     modifier = Modifier.padding(3.dp)
