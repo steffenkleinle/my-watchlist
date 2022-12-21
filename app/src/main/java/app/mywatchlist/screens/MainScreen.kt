@@ -8,7 +8,6 @@ import androidx.compose.material.Text
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -18,10 +17,9 @@ import androidx.navigation.compose.rememberNavController
 import app.mywatchlist.BottomBarScreen
 import app.mywatchlist.Screen
 import app.mywatchlist.navigation.SetupNavGraph
-import app.mywatchlist.ui.viewModels.WatchablesViewModel
 
 @Composable
-fun MainScreen(watchablesViewModel: WatchablesViewModel = viewModel()) {
+fun MainScreen() {
 
     val navController = rememberNavController()
     Scaffold(
