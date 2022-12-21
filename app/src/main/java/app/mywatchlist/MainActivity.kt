@@ -7,6 +7,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import app.mywatchlist.screens.MainScreen
 import app.mywatchlist.ui.viewModels.WatchablesViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -28,7 +29,7 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            MainScreen(homeViewModel)
+            MainScreen()
         }
     }
 }

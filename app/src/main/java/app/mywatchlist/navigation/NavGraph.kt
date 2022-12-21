@@ -1,25 +1,23 @@
-package app.mywatchlist
+package app.mywatchlist.navigation
 
 import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import app.mywatchlist.screens.DetailScreen
-import app.mywatchlist.screens.ProfileScreen
-import app.mywatchlist.ui.home.HomeViewModel
+import app.mywatchlist.*
+import app.mywatchlist.screens.HomeScreen
 
 
 @Composable
-fun SetupNavGraph(navController: NavHostController, homeViewModel: HomeViewModel = viewModel()) {
+fun SetupNavGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(
             route = Screen.Home.route
         ) {
-            HomeScreen(navController, homeViewModel)
+            HomeScreen(navController)
         }
         composable(
             route = Screen.Details.route,
