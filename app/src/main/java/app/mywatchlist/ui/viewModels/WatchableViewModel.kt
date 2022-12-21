@@ -2,8 +2,8 @@ package app.mywatchlist.ui.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.mywatchlist.data.models.Watchable
 import app.mywatchlist.data.repositories.WatchablesRepository
-import app.mywatchlist.ui.uiStates.WatchableUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -18,8 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class WatchableViewModel @Inject constructor(private val repository: WatchablesRepository) :
     ViewModel() {
-    private val _uiState = MutableStateFlow(WatchableUiState())
-    val uiState: StateFlow<WatchableUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(ResultUiState<Watchable>())
+    val uiState: StateFlow<ResultUiState<Watchable>> = _uiState.asStateFlow()
 
     private var fetchJob: Job? = null
     private var id: Int? = null
@@ -33,12 +33,12 @@ class WatchableViewModel @Inject constructor(private val repository: WatchablesR
         fetchJob?.cancel()
         fetchJob = viewModelScope.launch(Dispatchers.IO) {
             _uiState.update {
-                it.copy(loading = true, watchable = null, error = null)
+                it.copy(loading = true, data = null, error = null)
             }
             try {
                 val watchable = repository.getDetails(id)
                 _uiState.update {
-                    it.copy(watchable = watchable, loading = false)
+                    it.copy(data = watchable, loading = false)
                 }
             } catch (ioe: IOException) {
                 _uiState.update {
