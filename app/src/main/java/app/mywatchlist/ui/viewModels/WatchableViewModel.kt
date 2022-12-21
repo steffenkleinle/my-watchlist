@@ -3,7 +3,8 @@ package app.mywatchlist.ui.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.mywatchlist.data.repositories.WatchablesRepository
-import app.mywatchlist.ui.uiStates.WatchablesUiState
+import app.mywatchlist.ui.uiStates.WatchableUiState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,34 +13,28 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
 
-class WatchablesViewModel(private val repository: WatchablesRepository) : ViewModel() {
-    private val _uiState = MutableStateFlow(WatchablesUiState())
-    val uiState: StateFlow<WatchablesUiState> = _uiState.asStateFlow()
+class WatchableViewModel(private val repository: WatchablesRepository) : ViewModel() {
+    private val _uiState = MutableStateFlow(WatchableUiState())
+    val uiState: StateFlow<WatchableUiState> = _uiState.asStateFlow()
 
     private var fetchJob: Job? = null
-    private var query: String? = null
+    private var id: Int? = null
 
-    init {
-        fetch()
+    fun set(id: Int) {
+        this.id = id
+        fetch(id)
     }
 
-    fun updateQuery(query: String? = null) {
-        this.query = query
-        fetch(query)
-    }
-
-    private fun fetch(query: String? = null) {
+    private fun fetch(id: Int) {
         fetchJob?.cancel()
-        fetchJob = viewModelScope.launch {
+        fetchJob = viewModelScope.launch(Dispatchers.IO) {
             _uiState.update {
-                it.copy(loading = true, watchables = listOf(), error = null)
+                it.copy(loading = true, watchable = null, error = null)
             }
             try {
-                val watchables =
-                    if (query != null) repository.search(query) else repository.getTrending()
-
+                val watchable = repository.getDetails(id)
                 _uiState.update {
-                    it.copy(watchables = watchables, loading = false)
+                    it.copy(watchable = watchable, loading = false)
                 }
             } catch (ioe: IOException) {
                 _uiState.update {

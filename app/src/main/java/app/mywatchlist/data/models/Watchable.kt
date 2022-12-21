@@ -7,7 +7,7 @@ enum class WatchableType {
     movie, tv
 }
 
-data class Watchable(
+data class RawWatchable(
     @Json val id: Int,
     @Json val title: String,
     @Json val overview: String,
@@ -17,6 +17,31 @@ data class Watchable(
     @Json(name = "backdrop_path") val backdropPath: String,
     @Json(name = "release_date") val releaseDate: LocalDate,
     @Json(name = "vote_average") val voteAverage: Float,
-    @Json(name = "vote_count") val voteCount: Int,
-    val providers: Map<String, Providers>? = null
+    @Json(name = "vote_count") val voteCount: Int
 )
+
+data class Watchable(
+    val id: Int,
+    val title: String,
+    val overview: String,
+    val originalTitle: String,
+    val type: WatchableType,
+    val poster: String,
+    val releaseDate: LocalDate,
+    val voteAverage: Float,
+    val voteCount: Int,
+    val providers: Map<String, Providers>
+) {
+    constructor(rawWatchable: RawWatchable, providers: Map<String, Providers>) : this(
+        id = rawWatchable.id,
+        title = rawWatchable.title,
+        overview = rawWatchable.overview,
+        originalTitle = rawWatchable.originalTitle,
+        type = rawWatchable.type,
+        poster = rawWatchable.poster,
+        releaseDate = rawWatchable.releaseDate,
+        voteAverage = rawWatchable.voteAverage,
+        voteCount = rawWatchable.voteCount,
+        providers = providers
+    )
+}
