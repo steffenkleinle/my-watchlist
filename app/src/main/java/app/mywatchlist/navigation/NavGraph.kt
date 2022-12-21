@@ -2,6 +2,7 @@ package app.mywatchlist.navigation
 
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -9,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import app.mywatchlist.*
 import app.mywatchlist.screens.HomeScreen
+import app.mywatchlist.ui.viewModels.WatchablesViewModel
 
 
 @Composable
@@ -17,7 +19,8 @@ fun SetupNavGraph(navController: NavHostController) {
         composable(
             route = Screen.Home.route
         ) {
-            HomeScreen(navController)
+            val viewModel = hiltViewModel<WatchablesViewModel>()
+            HomeScreen(navController, viewModel)
         }
         composable(
             route = Screen.Details.route,

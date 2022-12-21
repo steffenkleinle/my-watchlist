@@ -5,11 +5,12 @@ import app.mywatchlist.data.models.Providers
 import app.mywatchlist.data.models.RawWatchable
 import app.mywatchlist.data.models.Watchable
 import app.mywatchlist.data.sources.TmdbRemoteDateSource
+import javax.inject.Inject
 
 private const val REGION = "US"
 private const val LANGUAGE = "en-$REGION"
 
-class WatchablesRepository(
+class WatchablesRepository @Inject constructor(
     private val tmdbRemoteDateSource: TmdbRemoteDateSource
 ) {
     suspend fun getTrending(language: String = LANGUAGE): List<Watchable> {

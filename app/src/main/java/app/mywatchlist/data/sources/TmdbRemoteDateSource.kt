@@ -9,7 +9,6 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.ToJson
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
@@ -21,6 +20,7 @@ import retrofit2.http.Query
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
+import javax.inject.Inject
 
 private const val BASE_URL = "https://api.themoviedb.org/3/"
 private const val API_KEY_QUERY_PARAM = "?api_key=${BuildConfig.TMDB_API_KEY}"
@@ -76,18 +76,18 @@ interface TmdbApiService {
     ): Response<Results<List<Provider>>>
 }
 
-class TmdbRemoteDateSource(private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) {
+class TmdbRemoteDateSource @Inject constructor() {
     private val tmdbApiService: TmdbApiService by lazy {
         retrofit.create(TmdbApiService::class.java)
     }
 
     suspend fun getTrending(language: String): Response<Results<List<RawWatchable>>> =
-        withContext(ioDispatcher) {
+        withContext(Dispatchers.IO) {
             tmdbApiService.getTrending(language)
         }
 
     suspend fun getDetails(id: Int, language: String): Response<RawWatchable> =
-        withContext(ioDispatcher) {
+        withContext(Dispatchers.IO) {
             tmdbApiService.getDetails(id, language)
         }
 
@@ -96,12 +96,12 @@ class TmdbRemoteDateSource(private val ioDispatcher: CoroutineDispatcher = Dispa
         language: String,
         region: String
     ): Response<Results<List<RawWatchable>>> =
-        withContext(ioDispatcher) {
+        withContext(Dispatchers.IO) {
             tmdbApiService.search(query, language, region)
         }
 
     suspend fun getProviders(watchableId: Int): Response<Results<Map<String, Providers>>> =
-        withContext(ioDispatcher) {
+        withContext(Dispatchers.IO) {
             tmdbApiService.getProviders(watchableId)
         }
 
@@ -109,7 +109,7 @@ class TmdbRemoteDateSource(private val ioDispatcher: CoroutineDispatcher = Dispa
         language: String,
         region: String
     ): Response<Results<List<Provider>>> =
-        withContext(ioDispatcher) {
+        withContext(Dispatchers.IO) {
             tmdbApiService.getProviders(language, region)
         }
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.mywatchlist.data.repositories.WatchablesRepository
 import app.mywatchlist.ui.uiStates.WatchableUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,8 +13,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
+import javax.inject.Inject
 
-class WatchableViewModel(private val repository: WatchablesRepository) : ViewModel() {
+@HiltViewModel
+class WatchableViewModel @Inject constructor(private val repository: WatchablesRepository) :
+    ViewModel() {
     private val _uiState = MutableStateFlow(WatchableUiState())
     val uiState: StateFlow<WatchableUiState> = _uiState.asStateFlow()
 
