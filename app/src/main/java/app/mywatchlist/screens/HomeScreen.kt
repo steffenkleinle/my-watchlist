@@ -72,7 +72,7 @@ fun HomeScreen(
 //                onValueChange = { searchInput = it },
 //                label = { Text("Search") }
 //            )
-            uiState.ifEmpty {
+            uiState.watchables.ifEmpty {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     LinearProgressIndicator(
                         modifier = Modifier
@@ -83,7 +83,7 @@ fun HomeScreen(
             }
             LazyVerticalGrid(columns = GridCells.Fixed(2),
                 content = {
-                    items(uiState) { watchable -> MovieCard(navController, watchable) }
+                    items(uiState.watchables) { watchable -> MovieCard(navController, watchable) }
                 })
         }
     }
