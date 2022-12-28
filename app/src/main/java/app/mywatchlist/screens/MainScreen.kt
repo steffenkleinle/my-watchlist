@@ -1,7 +1,5 @@
-package app.mywatchlist
+package app.mywatchlist.screens
 
-
-import android.util.Log
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -9,8 +7,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -18,16 +14,18 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import app.mywatchlist.ui.home.HomeViewModel
+import app.mywatchlist.BottomBarScreen
+import app.mywatchlist.Screen
+import app.mywatchlist.navigation.SetupNavGraph
 
 @Composable
-fun MainScreen(homeViewModel: HomeViewModel = viewModel()){
+fun MainScreen() {
 
     val navController = rememberNavController()
     Scaffold(
         bottomBar = { BottomBar(navController) }
     ) {
-        SetupNavGraph(navController, homeViewModel)
+        SetupNavGraph(navController)
     }
 }
 
