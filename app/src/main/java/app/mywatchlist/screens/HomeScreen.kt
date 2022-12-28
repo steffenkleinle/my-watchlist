@@ -72,7 +72,7 @@ fun HomeScreen(
 //                onValueChange = { searchInput = it },
 //                label = { Text("Search") }
 //            )
-            uiState.data?.ifEmpty {
+            if (uiState.loading) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     LinearProgressIndicator(
                         modifier = Modifier

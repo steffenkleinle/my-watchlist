@@ -15,7 +15,10 @@ import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
-class WatchableViewModel @Inject constructor(private val repository: WatchablesRepository) :
+class WatchableViewModel @Inject constructor(
+    private val repository: WatchablesRepository
+    ) :
+
     ViewModel() {
     private val _uiState = MutableStateFlow(ResultUiState<Watchable>())
     val uiState: StateFlow<ResultUiState<Watchable>> = _uiState.asStateFlow()
@@ -24,8 +27,10 @@ class WatchableViewModel @Inject constructor(private val repository: WatchablesR
     private var id: Int? = null
 
     fun set(id: Int) {
-        this.id = id
-        fetch(id)
+        if (this.id != id){
+            this.id = id
+            fetch(id)
+        }
     }
 
     private fun fetch(id: Int) {
