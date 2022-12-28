@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import app.mywatchlist.data.models.Watchable
 import app.mywatchlist.data.repositories.WatchablesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,7 +30,7 @@ class WatchableViewModel @Inject constructor(private val repository: WatchablesR
 
     private fun fetch(id: Int) {
         fetchJob?.cancel()
-        fetchJob = viewModelScope.launch(Dispatchers.IO) {
+        fetchJob = viewModelScope.launch {
             _uiState.update {
                 it.copy(loading = true, data = null, error = null)
             }
