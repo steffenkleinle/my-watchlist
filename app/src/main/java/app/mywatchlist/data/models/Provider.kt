@@ -1,4 +1,4 @@
-package app.mywatchlist.data
+package app.mywatchlist.data.models
 
 import com.squareup.moshi.Json
 

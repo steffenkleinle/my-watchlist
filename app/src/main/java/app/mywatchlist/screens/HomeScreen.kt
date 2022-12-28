@@ -1,4 +1,4 @@
-package app.mywatchlist
+package app.mywatchlist.screens
 
 import android.util.Log
 import androidx.compose.foundation.clickable
@@ -27,14 +27,19 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import app.mywatchlist.data.Watchable
-import app.mywatchlist.ui.home.HomeViewModel
+import app.mywatchlist.R
+import app.mywatchlist.Screen
+import app.mywatchlist.data.models.Watchable
+import app.mywatchlist.ui.viewModels.WatchablesViewModel
 import coil.compose.AsyncImage
 
 
 @Composable
-fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel = viewModel()) {
-    val uiState by homeViewModel.uiState.collectAsState()
+fun HomeScreen(
+    navController: NavController,
+    watchablesViewModel: WatchablesViewModel = viewModel()
+) {
+    val uiState by watchablesViewModel.uiState.collectAsState()
     Log.d("Home Screen UI State: ", uiState.toString())
 
     var searchInput: String = ""
@@ -67,7 +72,7 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel = view
 //                onValueChange = { searchInput = it },
 //                label = { Text("Search") }
 //            )
-            uiState.ifEmpty {
+            uiState.data?.ifEmpty {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     LinearProgressIndicator(
                         modifier = Modifier
@@ -78,7 +83,12 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel = view
             }
             LazyVerticalGrid(columns = GridCells.Fixed(2),
                 content = {
-                    items(uiState) { watchable -> MovieCard(navController, watchable) }
+                    items(uiState.data ?: listOf()) { watchable ->
+                        MovieCard(
+                            navController,
+                            watchable
+                        )
+                    }
                 })
         }
     }
