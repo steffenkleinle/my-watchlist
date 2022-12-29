@@ -40,10 +40,10 @@ class WatchableViewModel @Inject constructor(
                 it.copy(loading = true, data = null, error = null)
             }
             try {
-                val watchable = repository.getDetails(id)
-                _uiState.update {
-                    it.copy(data = watchable, loading = false)
-                }
+//                val watchable = repository.detailFlow(id)
+//                _uiState.update {
+//                    it.copy(data = watchable, loading = false)
+//                }
             } catch (ioe: IOException) {
                 _uiState.update {
                     it.copy(error = ioe.message ?: "Something went wrong!", loading = false)

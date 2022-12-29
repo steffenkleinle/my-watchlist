@@ -6,13 +6,15 @@ import app.mywatchlist.data.models.Watchable
 import app.mywatchlist.data.repositories.WatchablesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class WatchablesViewModel @Inject constructor(private val repository: WatchablesRepository) :
-    ViewModel() {
+class WatchlistViewModel @Inject constructor(
+    private val repository: WatchablesRepository,
+) : ViewModel() {
     val uiState: StateFlow<ResultUiState<List<Watchable>>> =
-        repository.trendingFlow()
+        repository.favoritesFlow()
             .catch { ResultUiState(loading = false, error = it.message ?: "Error", data = null) }
             .map { ResultUiState(loading = false, error = null, data = it) }
             .stateIn(
@@ -20,4 +22,20 @@ class WatchablesViewModel @Inject constructor(private val repository: Watchables
                 initialValue = ResultUiState(loading = true, error = null, data = null),
                 started = SharingStarted.WhileSubscribed(5000L)
             )
+
+    fun addFavorite(id: Int) = viewModelScope.launch {
+        repository.favorites.add(id)
+    }
+
+    fun removeFavorite(id: Int) = viewModelScope.launch {
+        repository.favorites.remove(id)
+    }
+
+    fun addWatched(id: Int) = viewModelScope.launch {
+        repository.watched.add(id)
+    }
+
+    fun removeWatched(id: Int) = viewModelScope.launch {
+        repository.watched.remove(id)
+    }
 }

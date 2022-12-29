@@ -2,17 +2,17 @@ package app.mywatchlist.ui.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import app.mywatchlist.data.models.Watchable
-import app.mywatchlist.data.repositories.WatchablesRepository
+import app.mywatchlist.data.models.Settings
+import app.mywatchlist.data.repositories.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
-class WatchablesViewModel @Inject constructor(private val repository: WatchablesRepository) :
+class SettingsViewModel @Inject constructor(repository: SettingsRepository) :
     ViewModel() {
-    val uiState: StateFlow<ResultUiState<List<Watchable>>> =
-        repository.trendingFlow()
+    val uiState: StateFlow<ResultUiState<Settings>> =
+        repository.settingsFlow
             .catch { ResultUiState(loading = false, error = it.message ?: "Error", data = null) }
             .map { ResultUiState(loading = false, error = null, data = it) }
             .stateIn(
