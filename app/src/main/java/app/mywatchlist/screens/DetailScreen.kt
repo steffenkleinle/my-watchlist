@@ -5,6 +5,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Divider
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -25,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import app.mywatchlist.data.models.Genre
 import app.mywatchlist.ui.viewModels.WatchableViewModel
 import coil.compose.AsyncImage
 import kotlin.math.round
@@ -34,15 +37,20 @@ import kotlin.math.round
 fun DetailScreen(
     navController: NavController,
     watchableId: Int?,
-    watchableViewModel: WatchableViewModel = viewModel()){
+    watchableViewModel: WatchableViewModel = viewModel()) {
 
     val watchable by watchableViewModel.uiState.collectAsState()
+    var genreList: List<Genre> = emptyList<Genre>()
 
-    if (watchableId != null){
+    if (watchableId != null) {
         watchableViewModel.set(watchableId)
     }
 
     Log.d("Watchable in Detail page", watchable.toString())
+
+    if (!watchable.data?.genres.isNullOrEmpty()) {
+        genreList = watchable.data?.genres?.toList() ?: emptyList<Genre>()
+    }
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -60,14 +68,17 @@ fun DetailScreen(
                 Icon(Icons.Outlined.ArrowBack, contentDescription = "Back")
             }
         }
-        Column(modifier = Modifier
-            .padding(10.dp, 10.dp, 20.dp, 70.dp)
-            .fillMaxWidth(),
-            ) {
-            Row(verticalAlignment = Alignment.CenterVertically,
+        Column(
+            modifier = Modifier
+                .padding(10.dp, 10.dp, 20.dp, 70.dp)
+                .fillMaxWidth(),
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween) {
-                Column(){
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column {
                     Text(
                         text = watchable.data?.title ?: "",
                         color = MaterialTheme.colors.primary,
@@ -75,68 +86,70 @@ fun DetailScreen(
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = watchable.data?.releaseDate.toString() ?: "",
+                        text = watchable.data?.releaseDate.toString().plus(" · ")
+                            .plus(watchable.data?.runtime).plus(" min"),
                     )
-                    Row() {
-                        AssistChip(
-                            modifier = Modifier
-                                .padding(2.dp, 0.dp, 2.dp, 0.dp),
-                            onClick = { /* Do something! */ },
-                            label = { Text("Action") }
-                        )
-                        AssistChip(
-                            modifier = Modifier
-                                .padding(2.dp, 0.dp, 2.dp, 0.dp),
-                            onClick = { /* Do something! */ },
-                            label = { Text("Drama") }
-                        )
-                        AssistChip(
-                            modifier = Modifier
-                                .padding(2.dp, 0.dp, 2.dp, 0.dp),
-                            onClick = { /* Do something! */ },
-                            label = { Text("Whatever") }
-                        )
+                    LazyRow() {
+                        itemsIndexed(genreList) { index, item ->
+                            AssistChip(
+                                modifier = Modifier
+                                    .padding(2.dp, 0.dp, 2.dp, 0.dp),
+                                onClick = { /* Do something! */ },
+                                label = { Text(item.name) }
+                            )
+                        }
                     }
                 }
             }
 
-            Divider(modifier = Modifier
-                .padding(0.dp, 10.dp, 0.dp, 10.dp))
+            Divider(
+                modifier = Modifier
+                    .padding(0.dp, 10.dp, 0.dp, 10.dp)
+            )
 
             Text(
                 text = "Overview",
                 fontSize = MaterialTheme.typography.h6.fontSize,
                 color = Color.Black
             )
-            Text(text = watchable.data?.overview ?: "")
+            Text(
+                text = watchable.data?.tagline ?: "",
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = watchable.data?.overview ?: ""
+            )
 
-            Divider(modifier = Modifier
-                .padding(0.dp, 10.dp, 0.dp, 10.dp))
+            Divider(
+                modifier = Modifier
+                    .padding(0.dp, 10.dp, 0.dp, 10.dp)
+            )
 
 
-                Text(
-                    text = "Vote",
-                    fontSize = MaterialTheme.typography.h6.fontSize,
-                    color = Color.Black
-                )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+            Text(
+                text = "Vote",
+                fontSize = MaterialTheme.typography.h6.fontSize,
+                color = Color.Black
+            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
 
-                    Icon(Icons.Default.Star, "Vote")
-                    if (watchable.data !== null && watchable.data!!.voteAverage !== null) {
-                        Text(
-                            text = (round(watchable.data!!.voteAverage * 100) / 100).toString() ?: "",
-                            fontSize = MaterialTheme.typography.h6.fontSize,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(0.dp, 0.dp, 5.dp, 0.dp)
-                        )
-                    }
-                    Text(text = "(".plus(watchable.data?.voteCount.toString() ?: "",).plus(" Votes)"))
+                Icon(Icons.Default.Star, "Vote")
+                if (watchable.data !== null && watchable.data!!.voteAverage !== null) {
+                    Text(
+                        text = (round(watchable.data!!.voteAverage * 100) / 100).toString() ?: "",
+                        fontSize = MaterialTheme.typography.h6.fontSize,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(0.dp, 0.dp, 5.dp, 0.dp)
+                    )
                 }
+                Text(text = "(".plus(watchable.data?.voteCount.toString() ?: "",).plus(" Votes)"))
             }
         }
     }
+}
+
 
 
 
