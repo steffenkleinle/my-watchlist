@@ -55,7 +55,7 @@ fun DetailScreen(
         genreList = watchable.data?.genres?.toList() ?: emptyList<Genre>()
     }
 
-    Column() {
+    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         Box() {
             AsyncImage(
                 model = "https://image.tmdb.org/t/p/original/" + watchable.data?.backdropPath,
@@ -102,7 +102,6 @@ fun DetailScreen(
                     }
                 }
             }
-
             Divider(
                 modifier = Modifier
                     .padding(0.dp, 10.dp, 0.dp, 10.dp)
@@ -125,8 +124,6 @@ fun DetailScreen(
                 modifier = Modifier
                     .padding(0.dp, 10.dp, 0.dp, 10.dp)
             )
-
-
             Text(
                 text = "Vote",
                 fontSize = MaterialTheme.typography.h6.fontSize,
@@ -147,60 +144,61 @@ fun DetailScreen(
                 }
                 Text(text = "(".plus(watchable.data?.voteCount.toString() ?: "",).plus(" Votes)"))
             }
-            Scaffold(
-            bottomBar = {
-                    Button(onClick = { /* Do something! */ }) {
-                    Icon(Icons.Default.Add, "Add")
-                    Text("Add to My watchlist") }
+            Row(modifier = Modifier
+                    .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center) {
+                Button(onClick = { /* Do something! */ }) {
+                        Icon(Icons.Default.Add, "Add")
+                        Text("Add to Watchlist") }
                 }
-            ) {}
-        }
-    }
-}
-
-
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
-@Composable
-fun detailPreview() {
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Box() {
-            AsyncImage(
-                model = "https://image.tmdb.org/t/p/original/",
-                contentDescription = "watchable.data?.title",
-                placeholder = painterResource(R.drawable.blank_movie_backdrop)
-            )
-            FilledTonalIconButton(
-                modifier = Modifier.padding(3.dp),
-                onClick = {  }
-            ) {
-                Icon(Icons.Outlined.ArrowBack, contentDescription = "Back")
             }
         }
+    }
+
+
+
+
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Preview(showBackground = true)
+    @Composable
+    fun detailPreview() {
         Column(
-            modifier = Modifier
-                .padding(10.dp, 10.dp, 20.dp, 70.dp)
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxSize()
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+            Box() {
+                AsyncImage(
+                    model = "https://image.tmdb.org/t/p/original/",
+                    contentDescription = "watchable.data?.title",
+                    placeholder = painterResource(R.drawable.blank_movie_backdrop)
+                )
+                FilledTonalIconButton(
+                    modifier = Modifier.padding(3.dp),
+                    onClick = { }
+                ) {
+                    Icon(Icons.Outlined.ArrowBack, contentDescription = "Back")
+                }
+            }
+            Column(
+                modifier = Modifier
+                    .padding(10.dp, 10.dp, 20.dp, 70.dp)
+                    .fillMaxWidth(),
             ) {
-                Column {
-                    Text(
-                        text = "watchable.data?.title ?: ",
-                        color = MaterialTheme.colors.primary,
-                        fontSize = MaterialTheme.typography.h4.fontSize,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = "watchable.data?.releaseDate.toString().plus)"
-                    )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column {
+                        Text(
+                            text = "watchable.data?.title ?: ",
+                            color = MaterialTheme.colors.primary,
+                            fontSize = MaterialTheme.typography.h4.fontSize,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = "watchable.data?.releaseDate.toString().plus)"
+                        )
 //                    LazyRow() {
 //                        itemsIndexed(genreList) { index, item ->
 //                            AssistChip(
@@ -211,61 +209,61 @@ fun detailPreview() {
 //                            )
 //                        }
 //                    }
+                    }
                 }
-            }
 
-            Divider(
-                modifier = Modifier
-                    .padding(0.dp, 10.dp, 0.dp, 10.dp)
-            )
+                Divider(
+                    modifier = Modifier
+                        .padding(0.dp, 10.dp, 0.dp, 10.dp)
+                )
 
-            Text(
-                text = "Overview",
-                fontSize = MaterialTheme.typography.h6.fontSize,
-                color = Color.Black
-            )
-            Text(
-                text = "watchable.data?.tagline",
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "watchable.data?.overview"
-            )
+                Text(
+                    text = "Overview",
+                    fontSize = MaterialTheme.typography.h6.fontSize,
+                    color = Color.Black
+                )
+                Text(
+                    text = "watchable.data?.tagline",
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "watchable.data?.overview"
+                )
 
-            Divider(
-                modifier = Modifier
-                    .padding(0.dp, 10.dp, 0.dp, 10.dp)
-            )
+                Divider(
+                    modifier = Modifier
+                        .padding(0.dp, 10.dp, 0.dp, 10.dp)
+                )
 
 
-            Text(
-                text = "Vote",
-                fontSize = MaterialTheme.typography.h6.fontSize,
-                color = Color.Black
-            )
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+                Text(
+                    text = "Vote",
+                    fontSize = MaterialTheme.typography.h6.fontSize,
+                    color = Color.Black
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
 
-                Icon(Icons.Default.Star, "Vote")
+                    Icon(Icons.Default.Star, "Vote")
                     Text(
                         text = "(round(watchable.data!!.voteAverage * 100) / 100).toString()",
                         fontSize = MaterialTheme.typography.h6.fontSize,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(0.dp, 0.dp, 5.dp, 0.dp)
                     )
-                Text(text = ".plus(watchable.data?.voteCount.toString()")
+                    Text(text = ".plus(watchable.data?.voteCount.toString()")
+                }
             }
         }
+        Row(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+                .padding(0.dp, 0.dp, 0.dp, 5.dp),
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(onClick = { /* Do something! */ }) { Text("Add to My watchlist") }
+        }
     }
-    Row(
-        modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth()
-            .padding(0.dp, 0.dp, 0.dp, 5.dp),
-        verticalAlignment = Alignment.Bottom,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Button(onClick = { /* Do something! */ }) { Text("Add to My watchlist") }
-    }
-}
