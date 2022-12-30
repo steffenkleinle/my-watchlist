@@ -28,7 +28,9 @@ class WatchablesViewModel @Inject constructor(private val repository: Watchables
     }
 
     fun updateQuery(query: String? = null) {
-        this.query = query
+        _uiState.update {
+            it.copy(queryString = query)
+        }
         fetch(query)
     }
 

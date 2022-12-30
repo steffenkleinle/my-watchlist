@@ -45,21 +45,15 @@ fun HomeScreen(
     val uiState by watchablesViewModel.uiState.collectAsState()
     Log.d("Home Screen UI State: ", uiState.toString())
 
-    var showSearchInput by remember { mutableStateOf(true) }
-
-    var searchInput: String by remember { mutableStateOf("") }
+    var showSearchInput by remember { mutableStateOf(uiState.queryString !== "") }
 
     fun onChangeSearchInput(inputString: String){
-        searchInput = inputString
-        if (searchInput !== ""){
+        if (inputString !== ""){
             watchablesViewModel.updateQuery(inputString)
         } else{
             watchablesViewModel.updateQuery()
         }
-
     }
-
-
 
     Box(
         modifier = Modifier
@@ -74,7 +68,7 @@ fun HomeScreen(
             verticalArrangement = Arrangement.Top
         ) {
             AnimatedVisibility(
-                visible = showSearchInput
+                visible = !showSearchInput
             ){
                 Row(
                     modifier = Modifier
@@ -84,14 +78,14 @@ fun HomeScreen(
                 ) {
                     Text(
                         modifier = Modifier
-                            .padding(5.dp, 0.dp, 5.dp, 10.dp),
+                            .padding(5.dp, 0.dp, 5.dp, 15.dp),
                         text = "Trending",
                         color = MaterialTheme.colors.primary,
                         fontSize = MaterialTheme.typography.h4.fontSize,
                         fontWeight = FontWeight.Bold
                     )
                     FilledTonalIconButton(
-                        onClick = { showSearchInput = !showSearchInput }
+                        onClick = { showSearchInput = true }
                     ) {
                         Icon(
                             Icons.Filled.Search, contentDescription = "Search",
@@ -101,19 +95,19 @@ fun HomeScreen(
                 }
             }
             AnimatedVisibility(
-                    visible = !showSearchInput
+                    visible = showSearchInput
             ) {
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(5.dp, 0.dp, 5.dp, 0.dp),
-                    value = searchInput,
+                        .padding(5.dp, 0.dp, 5.dp, 5.dp),
+                    value = uiState.queryString ?: "",
                     onValueChange = { onChangeSearchInput(it) },
                     label = { Text("Search") },
                     trailingIcon = {
                         FilledTonalIconButton(
                             onClick = {
-                                showSearchInput = !showSearchInput
+                                showSearchInput = false
                                 onChangeSearchInput("")
                             }
                         ) {
