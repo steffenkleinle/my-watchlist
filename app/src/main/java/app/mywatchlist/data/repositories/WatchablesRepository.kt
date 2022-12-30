@@ -4,7 +4,9 @@ import app.mywatchlist.data.models.Provider
 import app.mywatchlist.data.models.Providers
 import app.mywatchlist.data.models.RawWatchable
 import app.mywatchlist.data.models.Watchable
+import app.mywatchlist.data.sources.FavoritesLocalDataSource
 import app.mywatchlist.data.sources.TmdbRemoteDateSource
+import app.mywatchlist.data.sources.WatchedLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
@@ -14,14 +16,14 @@ private const val LANGUAGE = "en-$REGION"
 
 class WatchablesRepository @Inject constructor(
     private val tmdbRemoteDateSource: TmdbRemoteDateSource,
-    private val favoritesRepository: FavoritesRepository,
-    private val watchedRepository: WatchedRepository
+    private val favoritesLocalDataSource: FavoritesLocalDataSource,
+    private val watchedLocalDataSource: WatchedLocalDataSource
 ) {
-    val favorites = favoritesRepository
-    val watched = watchedRepository
+    val favorites = favoritesLocalDataSource
+    val watched = watchedLocalDataSource
 
     fun trendingFlow(language: String = LANGUAGE): Flow<List<Watchable>> =
-        combine(favoritesRepository.flow, watchedRepository.flow) { favorites, watched ->
+        combine(favoritesLocalDataSource.flow, watchedLocalDataSource.flow) { favorites, watched ->
             getTrending(language).map {
                 Watchable(
                     it,
@@ -33,7 +35,7 @@ class WatchablesRepository @Inject constructor(
         }
 
     fun favoritesFlow(language: String = LANGUAGE): Flow<List<Watchable>> =
-        combine(favoritesRepository.flow, watchedRepository.flow) { favorites, watched ->
+        combine(favoritesLocalDataSource.flow, watchedLocalDataSource.flow) { favorites, watched ->
             favorites.map {
                 Watchable(
                     getDetails(it, language),
@@ -45,7 +47,7 @@ class WatchablesRepository @Inject constructor(
         }
 
     fun detailFlow(id: Int, language: String = LANGUAGE): Flow<Watchable> =
-        combine(favoritesRepository.flow, watchedRepository.flow) { favorites, watched ->
+        combine(favoritesLocalDataSource.flow, watchedLocalDataSource.flow) { favorites, watched ->
             Watchable(
                 getDetails(id, language),
                 getProviders(id),
@@ -59,7 +61,7 @@ class WatchablesRepository @Inject constructor(
         language: String = LANGUAGE,
         region: String = REGION
     ): Flow<List<Watchable>> =
-        combine(favoritesRepository.flow, watchedRepository.flow) { favorites, watched ->
+        combine(favoritesLocalDataSource.flow, watchedLocalDataSource.flow) { favorites, watched ->
             search(query, language, region).map {
                 Watchable(
                     it,
