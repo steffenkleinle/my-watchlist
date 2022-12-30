@@ -5,20 +5,19 @@ import androidx.lifecycle.viewModelScope
 import app.mywatchlist.data.models.Watchable
 import app.mywatchlist.data.repositories.WatchablesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class WatchableViewModel @Inject constructor(
+class SearchViewModel @Inject constructor(
     private val repository: WatchablesRepository
 ) : ViewModel() {
-    private var id: Int? = null
-    var uiState: StateFlow<ResultUiState<Watchable>> = initialStateFlow(viewModelScope)
+    private var query: String? = null
+    var uiState = initialStateFlow<List<Watchable>>(viewModelScope)
 
-    fun setId(id: Int) {
-        if (this.id != id) {
-            this.id = id
-            uiState = repository.detailFlow(id).asStateFlow(viewModelScope)
+    fun setQuery(query: String) {
+        if (this.query != query) {
+            this.query = query
+            uiState = repository.searchFlow(query).asStateFlow(viewModelScope)
         }
     }
 }

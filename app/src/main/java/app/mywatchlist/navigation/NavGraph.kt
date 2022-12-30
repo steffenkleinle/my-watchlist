@@ -9,9 +9,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import app.mywatchlist.DETAIL_ARGUMENT_KEY
-import app.mywatchlist.DetailScreen
 import app.mywatchlist.ProfileScreen
 import app.mywatchlist.Screen
+import app.mywatchlist.screens.DetailScreen
 import app.mywatchlist.screens.HomeScreen
 import app.mywatchlist.screens.Watchlist
 import app.mywatchlist.ui.viewModels.WatchableViewModel
