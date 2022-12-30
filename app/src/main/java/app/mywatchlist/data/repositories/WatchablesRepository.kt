@@ -1,5 +1,6 @@
 package app.mywatchlist.data.repositories
 
+import android.util.Log
 import app.mywatchlist.data.models.Provider
 import app.mywatchlist.data.models.Providers
 import app.mywatchlist.data.models.RawWatchable
@@ -9,6 +10,7 @@ import javax.inject.Inject
 
 private const val REGION = "US"
 private const val LANGUAGE = "en-$REGION"
+
 
 class WatchablesRepository @Inject constructor(
     private val tmdbRemoteDateSource: TmdbRemoteDateSource
@@ -21,6 +23,7 @@ class WatchablesRepository @Inject constructor(
 
     suspend fun getDetails(id: Int, language: String = LANGUAGE): Watchable {
         val response = tmdbRemoteDateSource.getDetails(id, language)
+        Log.d("Response getDetails", response.body().toString())
         return response.body()?.addProviders()
             ?: throw Error(response.message())
     }

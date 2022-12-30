@@ -1,11 +1,17 @@
 package app.mywatchlist.data.models
 
+import android.provider.MediaStore.Audio.Genres
 import com.squareup.moshi.Json
 import java.time.LocalDate
 
 enum class WatchableType {
     movie, tv
 }
+
+data class Genre(
+    val id: Int,
+    val name: String
+)
 
 data class RawWatchable(
     @Json val id: Int,
@@ -17,7 +23,10 @@ data class RawWatchable(
     @Json(name = "backdrop_path") val backdropPath: String,
     @Json(name = "release_date") val releaseDate: LocalDate,
     @Json(name = "vote_average") val voteAverage: Float,
-    @Json(name = "vote_count") val voteCount: Int
+    @Json(name = "vote_count") val voteCount: Int,
+    @Json val runtime: Int?,
+    @Json val tagline: String?,
+    @Json val genres: Array<Genre>?
 )
 
 data class Watchable(
@@ -31,6 +40,9 @@ data class Watchable(
     val releaseDate: LocalDate,
     val voteAverage: Float,
     val voteCount: Int,
+    val runtime: Int?,
+    val tagline: String?,
+    val genres: Array<Genre>?,
     val providers: Map<String, Providers>
 ) {
     constructor(rawWatchable: RawWatchable, providers: Map<String, Providers>) : this(
@@ -44,6 +56,9 @@ data class Watchable(
         releaseDate = rawWatchable.releaseDate,
         voteAverage = rawWatchable.voteAverage,
         voteCount = rawWatchable.voteCount,
-        providers = providers
+        runtime = rawWatchable.runtime,
+        tagline = rawWatchable.tagline,
+        providers = providers,
+        genres = rawWatchable.genres
     )
 }
