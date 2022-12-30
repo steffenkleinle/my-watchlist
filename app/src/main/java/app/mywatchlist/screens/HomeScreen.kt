@@ -1,22 +1,23 @@
 package app.mywatchlist.screens
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -42,6 +43,7 @@ fun HomeScreen(
     val uiState by watchablesViewModel.uiState.collectAsState()
     Log.d("Home Screen UI State: ", uiState.toString())
 
+    var showSearchInput by remember { mutableStateOf(true) }
     var searchInput: String = ""
 
     Box(
@@ -56,22 +58,57 @@ fun HomeScreen(
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.Top
         ) {
-            Text(
-                modifier = Modifier
-                    .padding(5.dp, 0.dp, 5.dp, 10.dp),
-                text = "Trending",
-                color = MaterialTheme.colors.primary,
-                fontSize = MaterialTheme.typography.h4.fontSize,
-                fontWeight = FontWeight.Bold
-            )
-//            TextField(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(5.dp, 0.dp, 5.dp, 0.dp),
-//                value = searchInput,
-//                onValueChange = { searchInput = it },
-//                label = { Text("Search") }
-//            )
+            AnimatedVisibility(
+                visible = showSearchInput
+            ){
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(0.dp, 0.dp, 0.dp, 5.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .padding(5.dp, 0.dp, 5.dp, 10.dp),
+                        text = "Trending",
+                        color = MaterialTheme.colors.primary,
+                        fontSize = MaterialTheme.typography.h4.fontSize,
+                        fontWeight = FontWeight.Bold
+                    )
+                    FilledTonalIconButton(
+                        onClick = { showSearchInput = !showSearchInput }
+                    ) {
+                        Icon(
+                            Icons.Filled.Search, contentDescription = "Search",
+                            modifier = Modifier.padding(3.dp)
+                        )
+                    }
+                }
+            }
+            AnimatedVisibility(
+                    visible = !showSearchInput,
+//                    enter = slideInHorizontally{
+//                            fullWidth -> fullWidth / 3
+//                    },
+            ) {
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(5.dp, 0.dp, 5.dp, 0.dp),
+                    value = searchInput,
+                    onValueChange = { searchInput = it },
+                    label = { Text("Search") },
+                    trailingIcon = {
+                        FilledTonalIconButton(
+                            onClick = { showSearchInput = !showSearchInput }
+                        ) {
+                            Icon(
+                                Icons.Filled.Close, contentDescription = "Close",
+                                modifier = Modifier.padding(3.dp)
+                            )
+                        }
+                    }
+                )
+            }
             uiState.data?.ifEmpty {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     LinearProgressIndicator(
