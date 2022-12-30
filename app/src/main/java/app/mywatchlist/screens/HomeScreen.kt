@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -23,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -44,7 +46,20 @@ fun HomeScreen(
     Log.d("Home Screen UI State: ", uiState.toString())
 
     var showSearchInput by remember { mutableStateOf(true) }
-    var searchInput: String = ""
+
+    var searchInput: String by remember { mutableStateOf("") }
+
+    fun onChangeSearchInput(inputString: String){
+        searchInput = inputString
+        if (searchInput !== ""){
+            watchablesViewModel.updateQuery(inputString)
+        } else{
+            watchablesViewModel.updateQuery()
+        }
+
+    }
+
+
 
     Box(
         modifier = Modifier
@@ -62,7 +77,8 @@ fun HomeScreen(
                 visible = showSearchInput
             ){
                 Row(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(0.dp, 0.dp, 0.dp, 5.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -85,21 +101,21 @@ fun HomeScreen(
                 }
             }
             AnimatedVisibility(
-                    visible = !showSearchInput,
-//                    enter = slideInHorizontally{
-//                            fullWidth -> fullWidth / 3
-//                    },
+                    visible = !showSearchInput
             ) {
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(5.dp, 0.dp, 5.dp, 0.dp),
                     value = searchInput,
-                    onValueChange = { searchInput = it },
+                    onValueChange = { onChangeSearchInput(it) },
                     label = { Text("Search") },
                     trailingIcon = {
                         FilledTonalIconButton(
-                            onClick = { showSearchInput = !showSearchInput }
+                            onClick = {
+                                showSearchInput = !showSearchInput
+                                onChangeSearchInput("")
+                            }
                         ) {
                             Icon(
                                 Icons.Filled.Close, contentDescription = "Close",
@@ -109,7 +125,7 @@ fun HomeScreen(
                     }
                 )
             }
-            uiState.data?.ifEmpty {
+            if (uiState.loading) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     LinearProgressIndicator(
                         modifier = Modifier
@@ -148,11 +164,25 @@ fun MovieCard(navController: NavController, watchable: Watchable) {
                 navController.navigate(route = Screen.Details.passId(watchable.id))
             },
     ) {
-        AsyncImage(
-            model = "https://image.tmdb.org/t/p/original/" + watchable.posterPath,
-            contentDescription = watchable.title,
-            placeholder = painterResource(R.drawable.blank_movie_poster),
-        )
+        if (watchable.posterPath.isNullOrEmpty()) {
+            Box(contentAlignment = Alignment.Center){
+                Image(
+                    painter = painterResource(R.drawable.blank_movie_poster),
+                    contentDescription = watchable.title,
+                )
+                Text(
+                    text = watchable.title,
+                    textAlign = TextAlign.Center
+                )
+            }
+
+        }else {
+            AsyncImage(
+                model = "https://image.tmdb.org/t/p/original/" + watchable.posterPath,
+                contentDescription = watchable.title,
+                placeholder = painterResource(R.drawable.blank_movie_poster),
+            )
+        }
         Row(
             horizontalArrangement = Arrangement.End,
             modifier = Modifier
