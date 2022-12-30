@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class WatchableViewModel @Inject constructor(
+class WatchableDetailViewModel @Inject constructor(
     private val repository: WatchablesRepository
 ) : ViewModel() {
     private var id: Int? = null

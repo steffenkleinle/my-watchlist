@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class WatchablesViewModel @Inject constructor(repository: WatchablesRepository) : ViewModel() {
+class WatchablesTrendingViewModel @Inject constructor(repository: WatchablesRepository) :
+    ViewModel() {
     val uiState = repository.trendingFlow().asStateFlow(viewModelScope)
 }

@@ -27,16 +27,16 @@ import androidx.navigation.NavController
 import app.mywatchlist.R
 import app.mywatchlist.Screen
 import app.mywatchlist.data.models.Watchable
-import app.mywatchlist.ui.viewModels.WatchablesViewModel
+import app.mywatchlist.ui.viewModels.WatchablesTrendingViewModel
 import coil.compose.AsyncImage
 
 
 @Composable
 fun HomeScreen(
     navController: NavController,
-    watchablesViewModel: WatchablesViewModel
+    watchablesTrendingViewModel: WatchablesTrendingViewModel
 ) {
-    val uiState by watchablesViewModel.uiState.collectAsState()
+    val uiState by watchablesTrendingViewModel.uiState.collectAsState()
     Log.d("Home Screen UI State: ", uiState.toString())
 
     var searchInput: String = ""

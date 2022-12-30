@@ -26,7 +26,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import app.mywatchlist.R
 import app.mywatchlist.data.models.Genre
-import app.mywatchlist.ui.viewModels.WatchableViewModel
+import app.mywatchlist.ui.viewModels.WatchableDetailViewModel
 import coil.compose.AsyncImage
 import kotlin.math.round
 
@@ -35,14 +35,14 @@ import kotlin.math.round
 fun DetailScreen(
     navController: NavController,
     watchableId: Int?,
-    watchableViewModel: WatchableViewModel = viewModel()
+    watchableDetailViewModel: WatchableDetailViewModel = viewModel()
 ) {
 
-    val watchable by watchableViewModel.uiState.collectAsState()
+    val watchable by watchableDetailViewModel.uiState.collectAsState()
     var genreList: List<Genre> = emptyList<Genre>()
 
     if (watchableId != null) {
-        watchableViewModel.setId(watchableId)
+        watchableDetailViewModel.setId(watchableId)
     }
 
     Log.d("Watchable in Detail page", watchable.toString())
