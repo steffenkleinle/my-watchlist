@@ -130,9 +130,9 @@ fun DetailScreen(
             ) {
 
                 Icon(Icons.Default.Star, "Vote")
-                if (watchable.data !== null && watchable.data!!.voteAverage !== null) {
+                if (watchable.data != null) {
                     Text(
-                        text = (round(watchable.data!!.voteAverage * 100) / 100).toString() ?: "",
+                        text = (round(watchable.data!!.voteAverage * 100) / 100).toString(),
                         fontSize = MaterialTheme.typography.h6.fontSize,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(0.dp, 0.dp, 5.dp, 0.dp)
