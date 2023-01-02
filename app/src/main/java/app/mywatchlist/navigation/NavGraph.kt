@@ -8,10 +8,15 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import app.mywatchlist.*
+import app.mywatchlist.DETAIL_ARGUMENT_KEY
+import app.mywatchlist.ProfileScreen
+import app.mywatchlist.Screen
+import app.mywatchlist.screens.DetailScreen
 import app.mywatchlist.screens.HomeScreen
-import app.mywatchlist.ui.viewModels.WatchableViewModel
-import app.mywatchlist.ui.viewModels.WatchablesViewModel
+import app.mywatchlist.screens.Watchlist
+import app.mywatchlist.ui.viewModels.WatchableDetailViewModel
+import app.mywatchlist.ui.viewModels.WatchablesTrendingViewModel
+import app.mywatchlist.ui.viewModels.WatchlistViewModel
 
 
 @Composable
@@ -20,7 +25,7 @@ fun SetupNavGraph(navController: NavHostController) {
         composable(
             route = Screen.Home.route
         ) {
-            val viewModel = hiltViewModel<WatchablesViewModel>()
+            val viewModel = hiltViewModel<WatchablesTrendingViewModel>()
             HomeScreen(navController, viewModel)
         }
         composable(
@@ -31,14 +36,15 @@ fun SetupNavGraph(navController: NavHostController) {
                 }
             )
         ) {
-            val viewModel = hiltViewModel<WatchableViewModel>()
+            val viewModel = hiltViewModel<WatchableDetailViewModel>()
             Log.d("Args", it.arguments?.getInt(DETAIL_ARGUMENT_KEY).toString())
             DetailScreen(navController, it.arguments?.getInt(DETAIL_ARGUMENT_KEY), viewModel)
         }
         composable(
             route = Screen.MyWatchlist.route
         ) {
-            MyWatchlistScreen(navController)
+            val viewModel = hiltViewModel<WatchlistViewModel>()
+            Watchlist(navController, viewModel)
         }
         composable(
             route = Screen.Profile.route

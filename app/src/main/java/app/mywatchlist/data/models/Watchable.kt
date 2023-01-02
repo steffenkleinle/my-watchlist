@@ -1,6 +1,5 @@
 package app.mywatchlist.data.models
 
-import android.provider.MediaStore.Audio.Genres
 import com.squareup.moshi.Json
 import java.time.LocalDate
 
@@ -26,7 +25,7 @@ data class RawWatchable(
     @Json(name = "vote_count") val voteCount: Int,
     @Json val runtime: Int?,
     @Json val tagline: String?,
-    @Json val genres: Array<Genre>?
+    @Json val genres: List<Genre>?
 )
 
 data class Watchable(
@@ -42,10 +41,17 @@ data class Watchable(
     val voteCount: Int,
     val runtime: Int?,
     val tagline: String?,
-    val genres: Array<Genre>?,
-    val providers: Map<String, Providers>
+    val genres: List<Genre>?,
+    val providers: Map<String, Providers>,
+    val favorite: Boolean,
+    val watched: Boolean
 ) {
-    constructor(rawWatchable: RawWatchable, providers: Map<String, Providers>) : this(
+    constructor(
+        rawWatchable: RawWatchable,
+        providers: Map<String, Providers>,
+        favorite: Boolean,
+        watched: Boolean
+    ) : this(
         id = rawWatchable.id,
         title = rawWatchable.title,
         overview = rawWatchable.overview,
@@ -58,7 +64,9 @@ data class Watchable(
         voteCount = rawWatchable.voteCount,
         runtime = rawWatchable.runtime,
         tagline = rawWatchable.tagline,
+        genres = rawWatchable.genres,
         providers = providers,
-        genres = rawWatchable.genres
+        favorite = favorite,
+        watched = watched
     )
 }

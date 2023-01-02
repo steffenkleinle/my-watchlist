@@ -22,24 +22,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import app.mywatchlist.R
 import app.mywatchlist.Screen
 import app.mywatchlist.data.models.Watchable
-import app.mywatchlist.ui.viewModels.WatchablesViewModel
+import app.mywatchlist.ui.viewModels.WatchablesTrendingViewModel
 import coil.compose.AsyncImage
 
 
 @Composable
 fun HomeScreen(
     navController: NavController,
-    watchablesViewModel: WatchablesViewModel = viewModel()
+    watchablesTrendingViewModel: WatchablesTrendingViewModel
 ) {
-    val uiState by watchablesViewModel.uiState.collectAsState()
+    val uiState by watchablesTrendingViewModel.uiState.collectAsState()
     Log.d("Home Screen UI State: ", uiState.toString())
 
     var searchInput: String = ""
@@ -92,14 +89,6 @@ fun HomeScreen(
                 })
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    HomeScreen(
-        navController = rememberNavController()
-    )
 }
 
 @Composable

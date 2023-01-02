@@ -1,4 +1,4 @@
-package app.mywatchlist
+package app.mywatchlist.screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,14 +8,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import app.mywatchlist.ui.viewModels.WatchlistViewModel
 
 @Composable
-fun MyWatchlistScreen(navController: NavController){
-    Box(modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center)
+fun Watchlist(navController: NavController, viewModel: WatchlistViewModel) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    )
     {
         Text(
             text = "MyWatchlist",
@@ -24,10 +25,4 @@ fun MyWatchlistScreen(navController: NavController){
             fontWeight = FontWeight.Bold
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MyWatchlistScreenPreview(){
-    MyWatchlistScreen(navController = rememberNavController())
 }
