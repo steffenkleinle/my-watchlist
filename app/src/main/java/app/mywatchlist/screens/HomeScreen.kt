@@ -2,9 +2,6 @@ package app.mywatchlist.screens
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandHorizontally
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -30,26 +27,24 @@ import androidx.navigation.NavController
 import app.mywatchlist.R
 import app.mywatchlist.Screen
 import app.mywatchlist.data.models.Watchable
-import app.mywatchlist.ui.viewModels.WatchablesTrendingViewModel
+import app.mywatchlist.ui.viewModels.WatchablesViewModel
 import coil.compose.AsyncImage
 
 
 @Composable
 fun HomeScreen(
     navController: NavController,
-    watchablesTrendingViewModel: WatchablesTrendingViewModel
+    watchablesViewModel: WatchablesViewModel
 ) {
-    val uiState by watchablesTrendingViewModel.uiState.collectAsState()
+    val uiState by watchablesViewModel.uiState.collectAsState()
     Log.d("Home Screen UI State: ", uiState.toString())
 
-    var showSearchInput by remember { mutableStateOf(uiState.queryString !== "") }
+    var query by remember { mutableStateOf<String?>(null) }
+    val showSearchInput = query != null
 
-    fun onChangeSearchInput(inputString: String){
-        if (inputString !== ""){
-            watchablesViewModel.updateQuery(inputString)
-        } else{
-            watchablesViewModel.updateQuery()
-        }
+    fun onChangeSearchInput(input: String?) {
+        query = input
+        watchablesViewModel.update(input)
     }
 
     Box(
@@ -66,7 +61,7 @@ fun HomeScreen(
         ) {
             AnimatedVisibility(
                 visible = !showSearchInput
-            ){
+            ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -82,7 +77,7 @@ fun HomeScreen(
                         fontWeight = FontWeight.Bold
                     )
                     FilledTonalIconButton(
-                        onClick = { showSearchInput = true }
+                        onClick = { onChangeSearchInput("") }
                     ) {
                         Icon(
                             Icons.Filled.Search, contentDescription = "Search",
@@ -92,20 +87,19 @@ fun HomeScreen(
                 }
             }
             AnimatedVisibility(
-                    visible = showSearchInput
+                visible = showSearchInput
             ) {
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(5.dp, 0.dp, 5.dp, 5.dp),
-                    value = uiState.queryString ?: "",
+                    value = query ?: "",
                     onValueChange = { onChangeSearchInput(it) },
                     label = { Text("Search") },
                     trailingIcon = {
                         FilledTonalIconButton(
                             onClick = {
-                                showSearchInput = false
-                                onChangeSearchInput("")
+                                onChangeSearchInput(null)
                             }
                         ) {
                             Icon(
@@ -148,7 +142,7 @@ fun MovieCard(navController: NavController, watchable: Watchable) {
             },
     ) {
         if (watchable.posterPath.isNullOrEmpty()) {
-            Box(contentAlignment = Alignment.Center){
+            Box(contentAlignment = Alignment.Center) {
                 Image(
                     painter = painterResource(R.drawable.blank_movie_poster),
                     contentDescription = watchable.title,
@@ -159,7 +153,7 @@ fun MovieCard(navController: NavController, watchable: Watchable) {
                 )
             }
 
-        }else {
+        } else {
             AsyncImage(
                 model = "https://image.tmdb.org/t/p/original/" + watchable.posterPath,
                 contentDescription = watchable.title,
