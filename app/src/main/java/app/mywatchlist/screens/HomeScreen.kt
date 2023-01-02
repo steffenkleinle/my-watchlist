@@ -1,45 +1,51 @@
 package app.mywatchlist.screens
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.mywatchlist.R
 import app.mywatchlist.Screen
 import app.mywatchlist.data.models.Watchable
-import app.mywatchlist.ui.viewModels.WatchablesTrendingViewModel
+import app.mywatchlist.ui.viewModels.WatchablesViewModel
 import coil.compose.AsyncImage
 
 
 @Composable
 fun HomeScreen(
     navController: NavController,
-    watchablesTrendingViewModel: WatchablesTrendingViewModel
+    watchablesViewModel: WatchablesViewModel
 ) {
-    val uiState by watchablesTrendingViewModel.uiState.collectAsState()
+    val uiState by watchablesViewModel.uiState.collectAsState()
     Log.d("Home Screen UI State: ", uiState.toString())
 
-    var searchInput: String = ""
+    var query by remember { mutableStateOf<String?>(null) }
+    val showSearchInput = query != null
+
+    fun onChangeSearchInput(input: String?) {
+        query = input
+        watchablesViewModel.update(input)
+    }
 
     Box(
         modifier = Modifier
@@ -53,22 +59,57 @@ fun HomeScreen(
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.Top
         ) {
-            Text(
-                modifier = Modifier
-                    .padding(5.dp, 0.dp, 5.dp, 10.dp),
-                text = "Trending",
-                color = MaterialTheme.colors.primary,
-                fontSize = MaterialTheme.typography.h4.fontSize,
-                fontWeight = FontWeight.Bold
-            )
-//            TextField(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(5.dp, 0.dp, 5.dp, 0.dp),
-//                value = searchInput,
-//                onValueChange = { searchInput = it },
-//                label = { Text("Search") }
-//            )
+            AnimatedVisibility(
+                visible = !showSearchInput
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp, 0.dp, 0.dp, 5.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .padding(5.dp, 0.dp, 5.dp, 15.dp),
+                        text = "Trending",
+                        color = MaterialTheme.colors.primary,
+                        fontSize = MaterialTheme.typography.h4.fontSize,
+                        fontWeight = FontWeight.Bold
+                    )
+                    FilledTonalIconButton(
+                        onClick = { onChangeSearchInput("") }
+                    ) {
+                        Icon(
+                            Icons.Filled.Search, contentDescription = "Search",
+                            modifier = Modifier.padding(3.dp)
+                        )
+                    }
+                }
+            }
+            AnimatedVisibility(
+                visible = showSearchInput
+            ) {
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(5.dp, 0.dp, 5.dp, 5.dp),
+                    value = query ?: "",
+                    onValueChange = { onChangeSearchInput(it) },
+                    label = { Text("Search") },
+                    trailingIcon = {
+                        FilledTonalIconButton(
+                            onClick = {
+                                onChangeSearchInput(null)
+                            }
+                        ) {
+                            Icon(
+                                Icons.Filled.Close, contentDescription = "Close",
+                                modifier = Modifier.padding(3.dp)
+                            )
+                        }
+                    }
+                )
+            }
             if (uiState.loading) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     LinearProgressIndicator(
@@ -100,11 +141,25 @@ fun MovieCard(navController: NavController, watchable: Watchable) {
                 navController.navigate(route = Screen.Details.passId(watchable.id))
             },
     ) {
-        AsyncImage(
-            model = "https://image.tmdb.org/t/p/original/" + watchable.posterPath,
-            contentDescription = watchable.title,
-            placeholder = painterResource(R.drawable.blank_movie_poster),
-        )
+        if (watchable.posterPath.isNullOrEmpty()) {
+            Box(contentAlignment = Alignment.Center) {
+                Image(
+                    painter = painterResource(R.drawable.blank_movie_poster),
+                    contentDescription = watchable.title,
+                )
+                Text(
+                    text = watchable.title,
+                    textAlign = TextAlign.Center
+                )
+            }
+
+        } else {
+            AsyncImage(
+                model = "https://image.tmdb.org/t/p/original/" + watchable.posterPath,
+                contentDescription = watchable.title,
+                placeholder = painterResource(R.drawable.blank_movie_poster),
+            )
+        }
         Row(
             horizontalArrangement = Arrangement.End,
             modifier = Modifier
