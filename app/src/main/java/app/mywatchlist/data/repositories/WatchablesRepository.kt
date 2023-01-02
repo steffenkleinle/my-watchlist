@@ -1,40 +1,95 @@
 package app.mywatchlist.data.repositories
 
-import android.util.Log
 import app.mywatchlist.data.models.Provider
 import app.mywatchlist.data.models.Providers
 import app.mywatchlist.data.models.RawWatchable
 import app.mywatchlist.data.models.Watchable
+import app.mywatchlist.data.sources.FavoritesLocalDataSource
 import app.mywatchlist.data.sources.TmdbRemoteDateSource
+import app.mywatchlist.data.sources.WatchedLocalDataSource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 private const val REGION = "US"
 private const val LANGUAGE = "en-$REGION"
 
-
 class WatchablesRepository @Inject constructor(
-    private val tmdbRemoteDateSource: TmdbRemoteDateSource
+    private val tmdbRemoteDateSource: TmdbRemoteDateSource,
+    private val favoritesLocalDataSource: FavoritesLocalDataSource,
+    private val watchedLocalDataSource: WatchedLocalDataSource
 ) {
-    suspend fun getTrending(language: String = LANGUAGE): List<Watchable> {
-        val response = tmdbRemoteDateSource.getTrending(language)
-        return response.body()?.results?.map { it.addProviders() }
-            ?: throw Error(response.message())
-    }
+    val favorites = favoritesLocalDataSource
+    val watched = watchedLocalDataSource
 
-    suspend fun getDetails(id: Int, language: String = LANGUAGE): Watchable {
-        val response = tmdbRemoteDateSource.getDetails(id, language)
-        Log.d("Response getDetails", response.body().toString())
-        return response.body()?.addProviders()
-            ?: throw Error(response.message())
-    }
+    fun trendingFlow(language: String = LANGUAGE): Flow<List<Watchable>> =
+        combine(favoritesLocalDataSource.flow, watchedLocalDataSource.flow) { favorites, watched ->
+            getTrending(language).map {
+                Watchable(
+                    it,
+                    getProviders(it.id),
+                    favorites.contains(it.id),
+                    watched.contains(it.id)
+                )
+            }
+        }
 
-    suspend fun search(
+    fun favoritesFlow(language: String = LANGUAGE): Flow<List<Watchable>> =
+        combine(favoritesLocalDataSource.flow, watchedLocalDataSource.flow) { favorites, watched ->
+            favorites.map {
+                Watchable(
+                    getDetails(it, language),
+                    getProviders(it),
+                    favorites.contains(it),
+                    watched.contains(it)
+                )
+            }
+        }
+
+    fun detailFlow(id: Int, language: String = LANGUAGE): Flow<Watchable> =
+        combine(favoritesLocalDataSource.flow, watchedLocalDataSource.flow) { favorites, watched ->
+            Watchable(
+                getDetails(id, language),
+                getProviders(id),
+                favorites.contains(id),
+                watched.contains(id)
+            )
+        }
+
+    fun searchFlow(
         query: String,
         language: String = LANGUAGE,
         region: String = REGION
-    ): List<Watchable> {
+    ): Flow<List<Watchable>> =
+        combine(favoritesLocalDataSource.flow, watchedLocalDataSource.flow) { favorites, watched ->
+            search(query, language, region).map {
+                Watchable(
+                    it,
+                    getProviders(it.id),
+                    favorites.contains(it.id),
+                    watched.contains(it.id)
+                )
+            }
+        }
+
+    private suspend fun getTrending(language: String = LANGUAGE): List<RawWatchable> {
+        val response = tmdbRemoteDateSource.getTrending(language)
+        return response.body()?.results
+            ?: throw Error(response.message())
+    }
+
+    private suspend fun getDetails(id: Int, language: String = LANGUAGE): RawWatchable {
+        val response = tmdbRemoteDateSource.getDetails(id, language)
+        return response.body() ?: throw Error(response.message())
+    }
+
+    private suspend fun search(
+        query: String,
+        language: String = LANGUAGE,
+        region: String = REGION
+    ): List<RawWatchable> {
         val response = tmdbRemoteDateSource.search(query, language, region)
-        return response.body()?.results?.map { it.addProviders() }
+        return response.body()?.results
             ?: throw Error(response.message())
     }
 
@@ -52,7 +107,4 @@ class WatchablesRepository @Inject constructor(
         return response.body()?.results
             ?: throw Error(response.message())
     }
-
-    private suspend fun RawWatchable.addProviders(): Watchable =
-        Watchable(this, getProviders(this.id))
 }
