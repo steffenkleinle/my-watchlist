@@ -31,11 +31,14 @@ data class Results<T>(
 
 private class DateJsonAdapter {
     @FromJson
-    fun dateFromJson(dateJson: String): LocalDate =
-        LocalDate.parse(dateJson, DateTimeFormatter.ISO_DATE)
+    fun dateFromJson(dateJson: String): LocalDate? =
+        if (dateJson.isNotEmpty()) LocalDate.parse(
+            dateJson,
+            DateTimeFormatter.ISO_DATE
+        ) else null
 
     @ToJson
-    fun dateToJson(date: LocalDate): String = date.format(DateTimeFormatter.ISO_DATE)
+    fun dateToJson(date: LocalDate?): String? = date?.format(DateTimeFormatter.ISO_DATE)
 }
 
 private val moshi = Moshi.Builder()
