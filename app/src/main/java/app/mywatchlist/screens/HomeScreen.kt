@@ -152,7 +152,6 @@ fun MovieCard(navController: NavController, watchable: Watchable) {
                     textAlign = TextAlign.Center
                 )
             }
-
         } else {
             AsyncImage(
                 model = "https://image.tmdb.org/t/p/original/" + watchable.posterPath,

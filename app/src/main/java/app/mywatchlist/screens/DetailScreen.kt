@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -51,8 +52,30 @@ fun DetailScreen(
         genreList = watchable.data?.genres?.toList() ?: emptyList<Genre>()
     }
 
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        Box() {
+    if(watchable.loading){
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ){
+            CircularProgressIndicator()
+        }
+    } else {
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            Box() {
+            if (watchable.data?.backdropPath.isNullOrEmpty()) {
+                Box(
+                    contentAlignment = Alignment.Center) {
+                    Image(
+                        painter = painterResource(R.drawable.blank_movie_backdrop),
+                        contentDescription = watchable.data?.title,
+                    )
+                    Text(
+                        text = watchable.data?.title ?: "",
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
             AsyncImage(
                 model = "https://image.tmdb.org/t/p/original/" + watchable.data?.backdropPath,
                 contentDescription = watchable.data?.title,
@@ -150,6 +173,7 @@ fun DetailScreen(
                     Text("Add to Watchlist")
                 }
             }
+        }
         }
     }
 }
