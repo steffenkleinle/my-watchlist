@@ -52,8 +52,17 @@ fun DetailScreen(
         genreList = watchable.data?.genres?.toList() ?: emptyList<Genre>()
     }
 
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        Box() {
+    if(watchable.loading){
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ){
+            CircularProgressIndicator()
+        }
+    } else {
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            Box() {
             if (watchable.data?.backdropPath.isNullOrEmpty()) {
                 Box(
                     contentAlignment = Alignment.Center) {
@@ -164,6 +173,7 @@ fun DetailScreen(
                     Text("Add to Watchlist")
                 }
             }
+        }
         }
     }
 }
