@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
@@ -63,12 +64,14 @@ class MainActivity : ComponentActivity() {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .height(55.dp)
                         .zIndex(10f)
                         .background(MaterialTheme.colors.error)
-                        .padding(0.dp, 3.dp),
-                    contentAlignment = Alignment.TopCenter,
+                        .padding(0.dp, 0.dp)
+                        .clickable(onClick ={ /*Just to block onClick Event in Background*/ } ),
+                    contentAlignment = Alignment.Center,
                 ) {
-                    Row {
+                    Row{
                         Icon(Icons.Default.Warning, "Lost connection")
                         androidx.compose.material.Text(
                             text = "You're offline",
@@ -77,7 +80,6 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-
             MainScreen()
         }
     }
