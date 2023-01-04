@@ -15,7 +15,9 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -37,15 +39,10 @@ fun HomeScreen(
     watchablesViewModel: WatchablesViewModel
 ) {
     val uiState by watchablesViewModel.uiState.collectAsState()
+    val query by watchablesViewModel.queryUiState.collectAsState()
     Log.d("Home Screen UI State: ", uiState.toString())
 
-    var query by remember { mutableStateOf<String?>(null) }
     val showSearchInput = query != null
-
-    fun onChangeSearchInput(input: String?) {
-        query = input
-        watchablesViewModel.update(input)
-    }
 
     Box(
         modifier = Modifier
@@ -77,7 +74,7 @@ fun HomeScreen(
                         fontWeight = FontWeight.Bold
                     )
                     FilledTonalIconButton(
-                        onClick = { onChangeSearchInput("") }
+                        onClick = { watchablesViewModel.update("") }
                     ) {
                         Icon(
                             Icons.Filled.Search, contentDescription = "Search",
@@ -94,13 +91,11 @@ fun HomeScreen(
                         .fillMaxWidth()
                         .padding(5.dp, 0.dp, 5.dp, 5.dp),
                     value = query ?: "",
-                    onValueChange = { onChangeSearchInput(it) },
+                    onValueChange = { watchablesViewModel.update(it) },
                     label = { Text("Search") },
                     trailingIcon = {
                         FilledTonalIconButton(
-                            onClick = {
-                                onChangeSearchInput(null)
-                            }
+                            onClick = { watchablesViewModel.update(null) }
                         ) {
                             Icon(
                                 Icons.Filled.Close, contentDescription = "Close",
