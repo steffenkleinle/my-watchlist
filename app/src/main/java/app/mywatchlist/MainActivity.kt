@@ -60,14 +60,13 @@ class MainActivity : ComponentActivity() {
             val connectionStatus by connectivityObserver.observe().collectAsState(
                 initial = ConnectivityObserver.Status.Unavailable
             )
-            if (connectionStatus === ConnectivityObserver.Status.Lost) {
+            if (connectionStatus == ConnectivityObserver.Status.Unavailable || connectionStatus == ConnectivityObserver.Status.Lost) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(55.dp)
+                        .height(75.dp)
                         .zIndex(10f)
                         .background(MaterialTheme.colors.error)
-                        .padding(0.dp, 0.dp)
                         .clickable(onClick ={ /*Just to block onClick Event in Background*/ } ),
                     contentAlignment = Alignment.Center,
                 ) {
