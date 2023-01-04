@@ -19,8 +19,8 @@ fun <T> initialStateFlow(viewModelScope: CoroutineScope): StateFlow<ResultUiStat
 
 
 fun <T> Flow<T>.asStateFlow(viewModelScope: CoroutineScope): StateFlow<ResultUiState<T>> = this
-    .catch { ResultUiState(loading = false, error = it.message ?: "Error", data = null) }
     .map { ResultUiState(loading = false, error = null, data = it) }
+    .catch { emit(ResultUiState(loading = false, error = it.message ?: "Error", data = null)) }
     .stateIn(
         scope = viewModelScope,
         initialValue = ResultUiState(loading = true, error = null, data = null),
