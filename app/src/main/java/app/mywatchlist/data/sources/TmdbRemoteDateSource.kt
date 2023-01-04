@@ -1,5 +1,8 @@
 package app.mywatchlist.data.sources
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import app.mywatchlist.BuildConfig
 import app.mywatchlist.data.models.Provider
 import app.mywatchlist.data.models.Providers
@@ -9,8 +12,11 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.ToJson
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.Cache
+import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -29,6 +35,32 @@ data class Results<T>(
     @Json val results: T
 )
 
+fun hasNetwork(context: Context): Boolean {
+    val connectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+    return capabilities != null && (
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+            )
+}
+
+private const val cacheSize = (5 * 1024 * 1024).toLong()
+private fun setupOkHttpClient(applicationContext: Context) = OkHttpClient.Builder()
+    .cache(Cache(applicationContext.cacheDir, cacheSize))
+    .addInterceptor { chain ->
+        var request = chain.request()
+        request = if (hasNetwork(applicationContext))
+            request.newBuilder().header("Cache-Control", "public, max-age=" + 5).build()
+        else
+            request.newBuilder()
+                .header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7)
+                .build()
+        chain.proceed(request)
+    }
+    .build()
+
 private class DateJsonAdapter {
     @FromJson
     fun dateFromJson(dateJson: String): LocalDate =
@@ -43,9 +75,10 @@ private val moshi = Moshi.Builder()
     .add(DateJsonAdapter())
     .build()
 
-private val retrofit = Retrofit.Builder()
+private fun setupRetrofit(applicationContext: Context) = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .baseUrl(BASE_URL)
+    .client(setupOkHttpClient(applicationContext))
     .build()
 
 
@@ -76,9 +109,9 @@ interface TmdbApiService {
     ): Response<Results<List<Provider>>>
 }
 
-class TmdbRemoteDateSource @Inject constructor() {
+class TmdbRemoteDateSource @Inject constructor(@ApplicationContext applicationContext: Context) {
     private val tmdbApiService: TmdbApiService by lazy {
-        retrofit.create(TmdbApiService::class.java)
+        setupRetrofit(applicationContext).create(TmdbApiService::class.java)
     }
 
     suspend fun getTrending(language: String): Response<Results<List<RawWatchable>>> =
