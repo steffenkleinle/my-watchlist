@@ -24,6 +24,7 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import app.mywatchlist.screens.MainScreen
 import app.mywatchlist.utils.ConnectivityObserver
 import app.mywatchlist.utils.NetworkConnectivityObserver
+import app.mywatchlist.utils.networkStatus
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -57,9 +58,8 @@ class MainActivity : ComponentActivity() {
         val connectivityObserver = NetworkConnectivityObserver(applicationContext)
 
         setContent {
-            val connectionStatus by connectivityObserver.observe().collectAsState(
-                initial = ConnectivityObserver.Status.Unavailable
-            )
+            val connectionStatus: ConnectivityObserver.Status by connectivityObserver.observe()
+                .collectAsState(initial = networkStatus(applicationContext))
             if (connectionStatus == ConnectivityObserver.Status.Unavailable || connectionStatus == ConnectivityObserver.Status.Lost) {
                 Box(
                     modifier = Modifier
@@ -67,10 +67,10 @@ class MainActivity : ComponentActivity() {
                         .height(75.dp)
                         .zIndex(10f)
                         .background(MaterialTheme.colors.error)
-                        .clickable(onClick ={ /*Just to block onClick Event in Background*/ } ),
+                        .clickable(onClick = { /*Just to block onClick Event in Background*/ }),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Row{
+                    Row {
                         Icon(Icons.Default.Warning, "Lost connection")
                         androidx.compose.material.Text(
                             text = "You're offline",
