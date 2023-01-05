@@ -23,43 +23,53 @@ fun Watchlist(navController: NavController, watchlistViewModel: WatchlistViewMod
 
     val uiState by watchlistViewModel.uiState.collectAsState()
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(0.dp, 10.dp, 0.dp, 70.dp),
-        ) {
-        Column(
+    if (uiState.data.isNullOrEmpty()) {
+        Box(
             modifier = Modifier
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.Top
+                .fillMaxSize()
+                .padding(0.dp, 10.dp, 0.dp, 70.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Row(
+            Text(stringResource(R.string.no_movies_yet))
+        }
+    } else {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(0.dp, 10.dp, 0.dp, 70.dp),
+        ) {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(0.dp, 0.dp, 0.dp, 5.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.Top
             ) {
-                Text(
+                Row(
                     modifier = Modifier
-                        .padding(5.dp, 0.dp, 5.dp, 15.dp),
-                    text = stringResource(R.string.watchlist),
-                    color = MaterialTheme.colors.primary,
-                    fontSize = MaterialTheme.typography.h4.fontSize,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            if (uiState.loading || uiState.data.isNullOrEmpty()) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    LinearProgressIndicator(
+                        .fillMaxWidth()
+                        .padding(0.dp, 0.dp, 0.dp, 5.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
                         modifier = Modifier
-                            .semantics(mergeDescendants = true) {}
-                            .fillMaxWidth(),
+                            .padding(5.dp, 0.dp, 5.dp, 15.dp),
+                        text = stringResource(R.string.watchlist),
+                        color = MaterialTheme.colors.primary,
+                        fontSize = MaterialTheme.typography.h4.fontSize,
+                        fontWeight = FontWeight.Bold
                     )
                 }
-            } else {
-                MovieGrid(navController, uiState.data!!)
+                if (uiState.loading || uiState.data.isNullOrEmpty()) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        LinearProgressIndicator(
+                            modifier = Modifier
+                                .semantics(mergeDescendants = true) {}
+                                .fillMaxWidth(),
+                        )
+                    }
+                } else {
+                    MovieGrid(navController, uiState.data!!)
+                }
             }
         }
     }
 }
-
