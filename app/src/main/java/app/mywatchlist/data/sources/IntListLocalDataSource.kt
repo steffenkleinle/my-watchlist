@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import app.mywatchlist.data.PreferencesDataStoreKeys
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 import javax.inject.Inject
@@ -14,7 +15,7 @@ open class IntListLocalDataSource(
     private val dataStore: DataStore<Preferences>,
     private val key: Preferences.Key<Set<String>>
 ) {
-    val flow = dataStore.data
+    private val flow = dataStore.data
         .catch { exception ->
             if (exception is IOException) {
                 emit(emptyPreferences())
@@ -25,6 +26,8 @@ open class IntListLocalDataSource(
         .map { preferences ->
             preferences[key]?.map { it.toInt() } ?: listOf()
         }
+
+    suspend fun get(): List<Int> = flow.last()
 
     suspend fun add(id: Int) {
         flow.collect {
