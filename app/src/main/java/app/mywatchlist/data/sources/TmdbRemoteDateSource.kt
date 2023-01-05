@@ -1,12 +1,11 @@
 package app.mywatchlist.data.sources
 
 import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import app.mywatchlist.BuildConfig
 import app.mywatchlist.data.models.Provider
 import app.mywatchlist.data.models.Providers
 import app.mywatchlist.data.models.RawWatchable
+import app.mywatchlist.utils.hasNetwork
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.Json
 import com.squareup.moshi.Moshi
@@ -34,17 +33,6 @@ private const val API_KEY_QUERY_PARAM = "?api_key=${BuildConfig.TMDB_API_KEY}"
 data class Results<T>(
     @Json val results: T
 )
-
-fun hasNetwork(context: Context): Boolean {
-    val connectivityManager =
-        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-    return capabilities != null && (
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
-                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
-                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
-            )
-}
 
 private const val cacheSize = (5 * 1024 * 1024).toLong()
 private fun setupOkHttpClient(applicationContext: Context) = OkHttpClient.Builder()
