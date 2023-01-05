@@ -1,5 +1,6 @@
 package app.mywatchlist.screens
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -29,6 +30,7 @@ import app.mywatchlist.utils.ConnectivityObserver
 import app.mywatchlist.utils.NetworkConnectivityObserver
 
 
+
 @Composable
 fun MainScreen() {
 
@@ -36,9 +38,7 @@ fun MainScreen() {
 
     Scaffold(
         bottomBar = { BottomBar(navController) }
-    ) {
-        SetupNavGraph(navController)
-    }
+    ) { SetupNavGraph(navController) }
 }
 
 @Composable

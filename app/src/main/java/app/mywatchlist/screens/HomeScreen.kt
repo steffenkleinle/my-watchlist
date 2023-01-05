@@ -31,6 +31,8 @@ import app.mywatchlist.Screen
 import app.mywatchlist.data.models.Watchable
 import app.mywatchlist.ui.viewModels.WatchablesViewModel
 import coil.compose.AsyncImage
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 
 @Composable
@@ -43,6 +45,7 @@ fun HomeScreen(
     Log.d("Home Screen UI State: ", uiState.toString())
 
     val showSearchInput = query != null
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = uiState.loading)
 
     Box(
         modifier = Modifier
@@ -114,6 +117,7 @@ fun HomeScreen(
                     )
                 }
             }
+            SwipeRefresh(state = swipeRefreshState, onRefresh = { watchablesViewModel.update("") }) {
             LazyVerticalGrid(columns = GridCells.Fixed(2),
                 content = {
                     items(uiState.data ?: listOf()) { watchable ->
@@ -123,6 +127,7 @@ fun HomeScreen(
                         )
                     }
                 })
+            }
         }
     }
 }
