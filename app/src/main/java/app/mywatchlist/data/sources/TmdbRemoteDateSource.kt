@@ -129,7 +129,7 @@ class TmdbRemoteDateSource @Inject constructor(
         }
     }
 
-    suspend fun favorites(language: String = LANGUAGE): List<Watchable> {
+    suspend fun getFavorites(language: String = LANGUAGE): List<Watchable> {
         val favorites = favoritesLocalDataSource.get()
         val watched = watchedLocalDataSource.get()
         return favorites.map {
@@ -142,7 +142,7 @@ class TmdbRemoteDateSource @Inject constructor(
         }
     }
 
-    suspend fun detail(id: Int, language: String = LANGUAGE): Watchable {
+    suspend fun getDetail(id: Int, language: String = LANGUAGE): Watchable {
         val favorites = favoritesLocalDataSource.get()
         val watched = watchedLocalDataSource.get()
         return Watchable(

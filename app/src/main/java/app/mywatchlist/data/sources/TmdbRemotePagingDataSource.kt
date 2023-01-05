@@ -12,10 +12,9 @@ class TmdbRemotePagingDataSource @Inject constructor(private val tmdbRemoteDateS
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Watchable> {
         return try {
             val page = params.key ?: FIRST_PAGE
-
             return LoadResult.Page(
                 data = tmdbRemoteDateSource.getTrending(page),
-                prevKey = if (page == FIRST_PAGE) FIRST_PAGE else FIRST_PAGE - 1,
+                prevKey = if (page == FIRST_PAGE) null else page - 1,
                 nextKey = page + 1
             )
         } catch (e: java.lang.Exception) {

@@ -19,7 +19,7 @@ class WatchablesViewModel @Inject constructor(
     private val repository: WatchablesRepository
 ) : ViewModel() {
     val items: Flow<PagingData<Watchable>> = Pager(
-        // pageSize is not used
+        // WARNING: pageSize is not used
         config = PagingConfig(pageSize = PAGE_SIZE),
         pagingSourceFactory = { repository.watchablesPagingSource() }
     )

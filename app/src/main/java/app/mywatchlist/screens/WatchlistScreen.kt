@@ -1,15 +1,8 @@
 package app.mywatchlist.screens
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.TextField
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -32,7 +25,7 @@ fun Watchlist(navController: NavController, watchlistViewModel: WatchlistViewMod
         modifier = Modifier
             .fillMaxSize()
             .padding(0.dp, 10.dp, 0.dp, 70.dp),
-        ) {
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -53,6 +46,7 @@ fun Watchlist(navController: NavController, watchlistViewModel: WatchlistViewMod
                     fontWeight = FontWeight.Bold
                 )
             }
+            // TODO Show no items message if empty
             if (uiState.loading || uiState.data.isNullOrEmpty()) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     LinearProgressIndicator(
