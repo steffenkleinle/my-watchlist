@@ -12,6 +12,8 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
@@ -29,7 +31,8 @@ fun HomeScreen(
     watchablesViewModel: WatchablesViewModel
 ) {
     val watchables = watchablesViewModel.items.collectAsLazyPagingItems()
-    val showSearchInput = false
+    val query by watchablesViewModel.queryUiState.collectAsState()
+    val showSearchInput = query != null
 
     Box(
         modifier = Modifier
@@ -61,7 +64,7 @@ fun HomeScreen(
                         fontWeight = FontWeight.Bold
                     )
                     FilledTonalIconButton(
-                        onClick = {}
+                        onClick = { watchablesViewModel.update("") }
                     ) {
                         Icon(
                             Icons.Filled.Search, contentDescription = "Search",
@@ -77,12 +80,12 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(5.dp, 0.dp, 5.dp, 5.dp),
-                    value = "",
-                    onValueChange = {},
+                    value = query ?: "",
+                    onValueChange = { watchablesViewModel.update(it) },
                     label = { Text("Search") },
                     trailingIcon = {
                         FilledTonalIconButton(
-                            onClick = {}
+                            onClick = { watchablesViewModel.update(null) }
                         ) {
                             Icon(
                                 Icons.Filled.Close, contentDescription = "Close",

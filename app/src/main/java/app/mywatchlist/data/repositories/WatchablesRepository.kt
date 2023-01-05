@@ -12,7 +12,8 @@ class WatchablesRepository @Inject constructor(
     val watched: WatchedLocalDataSource,
     private val tmdbRemoteDataSource: TmdbRemoteDateSource
 ) {
-    fun watchablesPagingSource() = TmdbRemotePagingDataSource(tmdbRemoteDataSource)
+    fun watchablesPagingSource(query: String?) =
+        TmdbRemotePagingDataSource(tmdbRemoteDataSource, query)
 
     suspend fun getFavorites(): List<Watchable> = tmdbRemoteDataSource.getFavorites()
     suspend fun getDetails(id: Int): Watchable = tmdbRemoteDataSource.getDetail(id)

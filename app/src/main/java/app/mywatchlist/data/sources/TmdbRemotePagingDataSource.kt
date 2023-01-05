@@ -7,13 +7,19 @@ import javax.inject.Inject
 
 private const val FIRST_PAGE = 1
 
-class TmdbRemotePagingDataSource @Inject constructor(private val tmdbRemoteDateSource: TmdbRemoteDateSource) :
+class TmdbRemotePagingDataSource @Inject constructor(
+    private val tmdbRemoteDateSource: TmdbRemoteDateSource,
+    private val query: String?
+) :
     PagingSource<Int, Watchable>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Watchable> {
         return try {
             val page = params.key ?: FIRST_PAGE
             return LoadResult.Page(
-                data = tmdbRemoteDateSource.getTrending(page),
+                data = if (query.isNullOrEmpty()) tmdbRemoteDateSource.getTrending(page) else tmdbRemoteDateSource.search(
+                    query,
+                    page
+                ),
                 prevKey = if (page == FIRST_PAGE) null else page - 1,
                 nextKey = page + 1
             )
