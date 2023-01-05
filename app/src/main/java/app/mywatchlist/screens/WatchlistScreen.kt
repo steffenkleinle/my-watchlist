@@ -68,16 +68,3 @@ fun Watchlist(navController: NavController, watchlistViewModel: WatchlistViewMod
     }
 }
 
-//    Box(
-//        modifier = Modifier.fillMaxSize(),
-//        contentAlignment = Alignment.Center
-//    )
-//    {
-//        Text(
-//            text = "MyWatchlist",
-//            color = MaterialTheme.colors.secondary,
-//            fontSize = MaterialTheme.typography.h3.fontSize,
-//            fontWeight = FontWeight.Bold
-//        )
-//    }
-
