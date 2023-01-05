@@ -36,9 +36,10 @@ fun SetupNavGraph(navController: NavHostController) {
                 }
             )
         ) {
-            val viewModel = hiltViewModel<WatchableDetailViewModel>()
+            val watchableViewModel = hiltViewModel<WatchableDetailViewModel>()
+            val watchlistViewModel = hiltViewModel<WatchlistViewModel>()
             Log.d("Args", it.arguments?.getInt(DETAIL_ARGUMENT_KEY).toString())
-            DetailScreen(navController, it.arguments?.getInt(DETAIL_ARGUMENT_KEY), viewModel)
+            DetailScreen(navController, it.arguments?.getInt(DETAIL_ARGUMENT_KEY), watchableViewModel, watchlistViewModel)
         }
         composable(
             route = Screen.MyWatchlist.route

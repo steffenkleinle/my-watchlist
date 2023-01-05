@@ -29,6 +29,7 @@ import androidx.navigation.NavController
 import app.mywatchlist.R
 import app.mywatchlist.Screen
 import app.mywatchlist.data.models.Watchable
+import app.mywatchlist.ui.components.MovieGrid
 import app.mywatchlist.ui.viewModels.WatchablesViewModel
 import coil.compose.AsyncImage
 
@@ -105,7 +106,7 @@ fun HomeScreen(
                     }
                 )
             }
-            if (uiState.loading) {
+            if (uiState.loading || uiState.data.isNullOrEmpty()) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     LinearProgressIndicator(
                         modifier = Modifier
@@ -113,59 +114,20 @@ fun HomeScreen(
                             .fillMaxWidth(),
                     )
                 }
+            }else{
+                MovieGrid(navController, uiState.data!!)
             }
-            LazyVerticalGrid(columns = GridCells.Fixed(2),
-                content = {
-                    items(uiState.data ?: listOf()) { watchable ->
-                        MovieCard(
-                            navController,
-                            watchable
-                        )
-                    }
-                })
+
+//            LazyVerticalGrid(columns = GridCells.Fixed(2),
+//                content = {
+//                    items(uiState.data ?: listOf()) { watchable ->
+//                        MovieCard(
+//                            navController,
+//                            watchable
+//                        )
+//                    }
+//                })
         }
     }
 }
 
-@Composable
-fun MovieCard(navController: NavController, watchable: Watchable) {
-    Card(
-        modifier = Modifier
-            .padding(4.dp)
-            .clickable {
-                navController.navigate(route = Screen.Details.passId(watchable.id))
-            },
-    ) {
-        if (watchable.posterPath.isNullOrEmpty()) {
-            Box(contentAlignment = Alignment.Center) {
-                Image(
-                    painter = painterResource(R.drawable.blank_movie_poster),
-                    contentDescription = watchable.title,
-                )
-                Text(
-                    text = watchable.title,
-                    textAlign = TextAlign.Center
-                )
-            }
-        } else {
-            AsyncImage(
-                model = "https://image.tmdb.org/t/p/original/" + watchable.posterPath,
-                contentDescription = watchable.title,
-                placeholder = painterResource(R.drawable.blank_movie_poster),
-            )
-        }
-        Row(
-            horizontalArrangement = Arrangement.End,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-        ) {
-            FilledTonalIconButton(onClick = { /*Do sth*/ }) {
-                Icon(
-                    Icons.Outlined.Add, contentDescription = "Add to myWatchlist",
-                    modifier = Modifier.padding(3.dp)
-                )
-            }
-        }
-    }
-}

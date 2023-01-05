@@ -28,6 +28,7 @@ import androidx.navigation.NavController
 import app.mywatchlist.R
 import app.mywatchlist.data.models.Genre
 import app.mywatchlist.ui.viewModels.WatchableDetailViewModel
+import app.mywatchlist.ui.viewModels.WatchlistViewModel
 import coil.compose.AsyncImage
 import kotlin.math.round
 
@@ -36,7 +37,8 @@ import kotlin.math.round
 fun DetailScreen(
     navController: NavController,
     watchableId: Int?,
-    watchableDetailViewModel: WatchableDetailViewModel = viewModel()
+    watchableDetailViewModel: WatchableDetailViewModel = viewModel(),
+    watchlistViewModel: WatchlistViewModel = viewModel()
 ) {
 
     val watchable by watchableDetailViewModel.uiState.collectAsState()
@@ -45,6 +47,8 @@ fun DetailScreen(
     if (watchableId != null) {
         watchableDetailViewModel.setId(watchableId)
     }
+
+    //val watchlistViewModel by watchlistViewModel.uiState.collectAsState()
 
     Log.d("Watchable in Detail page", watchable.toString())
 
@@ -168,7 +172,7 @@ fun DetailScreen(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Button(onClick = { /* Do something! */ }) {
+                Button(onClick = { watchlistViewModel.addFavorite(watchableId ?: -1) }) {
                     Icon(Icons.Default.Add, "Add")
                     Text("Add to Watchlist")
                 }
