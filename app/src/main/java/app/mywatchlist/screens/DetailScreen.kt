@@ -5,7 +5,6 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.CheckboxColors
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
@@ -19,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -51,8 +51,6 @@ fun DetailScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
-
-    Log.d("Watchable in Detail page", watchable.toString())
 
     if (!watchable.data?.genres.isNullOrEmpty()) {
         genreList = watchable.data?.genres?.toList() ?: emptyList<Genre>()
@@ -96,7 +94,7 @@ fun DetailScreen(
                         modifier = Modifier.padding(3.dp),
                         onClick = { navController.popBackStack() }
                     ) {
-                        Icon(Icons.Outlined.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Outlined.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                     if(watchable.data?.favorite == true){
                         Checkbox(
@@ -135,8 +133,7 @@ fun DetailScreen(
                             .padding(0.dp, 10.dp, 0.dp, 10.dp)
                     )
                     Text(
-                        text = watchable.data?.releaseDate.toString().plus(" · ")
-                            .plus(watchable.data?.runtime).plus(" min"),
+                        text = stringResource(R.string.runtime_plus_release, watchable.data?.releaseDate.toString(), watchable.data?.runtime.toString())
                     )
                     LazyRow() {
                         itemsIndexed(genreList) { index, item ->
@@ -156,7 +153,7 @@ fun DetailScreen(
             )
 
             Text(
-                text = "Overview",
+                text = stringResource(R.string.overview),
                 fontSize = MaterialTheme.typography.h6.fontSize,
                 color = Color.Black
             )
@@ -173,7 +170,7 @@ fun DetailScreen(
                     .padding(0.dp, 10.dp, 0.dp, 10.dp)
             )
             Text(
-                text = "Vote",
+                text = stringResource(R.string.vote),
                 fontSize = MaterialTheme.typography.h6.fontSize,
                 color = Color.Black
             )
@@ -181,7 +178,7 @@ fun DetailScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                Icon(Icons.Default.Star, "Vote")
+                Icon(Icons.Default.Star, stringResource(R.string.vote))
                 if (watchable.data != null) {
                     Text(
                         text = (round(watchable.data!!.voteAverage * 100) / 100).toString(),
@@ -190,7 +187,7 @@ fun DetailScreen(
                         modifier = Modifier.padding(0.dp, 0.dp, 5.dp, 0.dp)
                     )
                 }
-                Text(text = "(".plus(watchable.data?.voteCount.toString() ?: "").plus(" Votes)"))
+                Text(stringResource(R.string.votecount, watchable.data?.voteCount.toString()))
             }
             if (watchable.data?.favorite == true){
                 Row(
@@ -201,11 +198,11 @@ fun DetailScreen(
                     Button(onClick = {
                         watchlistViewModel.removeFavorite(watchableId ?: -1)
                         scope.launch {
-                            snackbarHostState.showSnackbar("Removed from watchlist")
+                            snackbarHostState.showSnackbar(message = "Removed from watchlist")
                         }
                     }) {
                         Icon(Icons.Default.Delete, "Remove")
-                        Text("   Remove to Watchlist")
+                        Text(stringResource(R.string.remove_from_watchlist))
                     }
                 }
                 SnackbarHost(
@@ -225,11 +222,11 @@ fun DetailScreen(
                     Button(onClick = {
                         watchlistViewModel.addFavorite(watchableId ?: -1)
                         scope.launch {
-                            snackbarHostState.showSnackbar("Added to watchlist")
+                            snackbarHostState.showSnackbar(message = "Added to watchlist")
                         }
                     }) {
                         Icon(Icons.Default.Add, "Add")
-                        Text("Add to Watchlist")
+                        Text(stringResource(R.string.add_to_Watchlist))
                     }
                 }
                 SnackbarHost(
@@ -243,114 +240,5 @@ fun DetailScreen(
             }
         }
         }
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun detailPreview() {
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Box() {
-            AsyncImage(
-                model = "https://image.tmdb.org/t/p/original/",
-                contentDescription = "watchable.data?.title",
-                placeholder = painterResource(R.drawable.blank_movie_backdrop)
-            )
-            FilledTonalIconButton(
-                modifier = Modifier.padding(3.dp),
-                onClick = { }
-            ) {
-                Icon(Icons.Outlined.ArrowBack, contentDescription = "Back")
-            }
-        }
-        Column(
-            modifier = Modifier
-                .padding(10.dp, 10.dp, 20.dp, 70.dp)
-                .fillMaxWidth(),
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column {
-                    Text(
-                        text = "watchable.data?.title ?: ",
-                        color = MaterialTheme.colors.primary,
-                        fontSize = MaterialTheme.typography.h4.fontSize,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = "watchable.data?.releaseDate.toString().plus)"
-                    )
-//                    LazyRow() {
-//                        itemsIndexed(genreList) { index, item ->
-//                            AssistChip(
-//                                modifier = Modifier
-//                                    .padding(2.dp, 0.dp, 2.dp, 0.dp),
-//                                onClick = { /* Do something! */ },
-//                                label = { Text(item.name) }
-//                            )
-//                        }
-//                    }
-                }
-            }
-
-            Divider(
-                modifier = Modifier
-                    .padding(0.dp, 10.dp, 0.dp, 10.dp)
-            )
-
-            Text(
-                text = "Overview",
-                fontSize = MaterialTheme.typography.h6.fontSize,
-                color = Color.Black
-            )
-            Text(
-                text = "watchable.data?.tagline",
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "watchable.data?.overview"
-            )
-
-            Divider(
-                modifier = Modifier
-                    .padding(0.dp, 10.dp, 0.dp, 10.dp)
-            )
-
-
-            Text(
-                text = "Vote",
-                fontSize = MaterialTheme.typography.h6.fontSize,
-                color = Color.Black
-            )
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Icon(Icons.Default.Star, "Vote")
-                Text(
-                    text = "(round(watchable.data!!.voteAverage * 100) / 100).toString()",
-                    fontSize = MaterialTheme.typography.h6.fontSize,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(0.dp, 0.dp, 5.dp, 0.dp)
-                )
-                Text(text = ".plus(watchable.data?.voteCount.toString()")
-            }
-        }
-    }
-    Row(
-        modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth()
-            .padding(0.dp, 0.dp, 0.dp, 5.dp),
-        verticalAlignment = Alignment.Bottom,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Button(onClick = { /* Do something! */ }) { Text("Add to My watchlist") }
     }
 }

@@ -1,25 +1,20 @@
 package app.mywatchlist.screens
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.TextField
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import app.mywatchlist.R
 import app.mywatchlist.ui.components.MovieGrid
 import app.mywatchlist.ui.viewModels.WatchlistViewModel
 
@@ -47,7 +42,7 @@ fun Watchlist(navController: NavController, watchlistViewModel: WatchlistViewMod
                 Text(
                     modifier = Modifier
                         .padding(5.dp, 0.dp, 5.dp, 15.dp),
-                    text = "Watchlist",
+                    text = stringResource(R.string.watchlist),
                     color = MaterialTheme.colors.primary,
                     fontSize = MaterialTheme.typography.h4.fontSize,
                     fontWeight = FontWeight.Bold

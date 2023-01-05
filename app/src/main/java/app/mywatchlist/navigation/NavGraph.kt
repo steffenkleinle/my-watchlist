@@ -38,7 +38,6 @@ fun SetupNavGraph(navController: NavHostController) {
         ) {
             val watchableViewModel = hiltViewModel<WatchableDetailViewModel>()
             val watchlistViewModel = hiltViewModel<WatchlistViewModel>()
-            Log.d("Args", it.arguments?.getInt(DETAIL_ARGUMENT_KEY).toString())
             DetailScreen(navController, it.arguments?.getInt(DETAIL_ARGUMENT_KEY), watchableViewModel, watchlistViewModel)
         }
         composable(

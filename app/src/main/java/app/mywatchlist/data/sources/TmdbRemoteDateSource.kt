@@ -24,7 +24,6 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.*
 import javax.inject.Inject
 
 private const val BASE_URL = "https://api.themoviedb.org/3/"
