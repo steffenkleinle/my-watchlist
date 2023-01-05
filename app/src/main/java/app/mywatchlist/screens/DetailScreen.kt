@@ -5,16 +5,16 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.CheckboxColors
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,7 +28,9 @@ import androidx.navigation.NavController
 import app.mywatchlist.R
 import app.mywatchlist.data.models.Genre
 import app.mywatchlist.ui.viewModels.WatchableDetailViewModel
+import app.mywatchlist.ui.viewModels.WatchlistViewModel
 import coil.compose.AsyncImage
+import kotlinx.coroutines.launch
 import kotlin.math.round
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,7 +38,8 @@ import kotlin.math.round
 fun DetailScreen(
     navController: NavController,
     watchableId: Int?,
-    watchableDetailViewModel: WatchableDetailViewModel = viewModel()
+    watchableDetailViewModel: WatchableDetailViewModel = viewModel(),
+    watchlistViewModel: WatchlistViewModel = viewModel()
 ) {
 
     val watchable by watchableDetailViewModel.uiState.collectAsState()
@@ -45,6 +48,9 @@ fun DetailScreen(
     if (watchableId != null) {
         watchableDetailViewModel.setId(watchableId)
     }
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     Log.d("Watchable in Detail page", watchable.toString())
 
@@ -81,12 +87,31 @@ fun DetailScreen(
                 contentDescription = watchable.data?.title,
                 placeholder = painterResource(R.drawable.blank_movie_backdrop)
             )
-            FilledTonalIconButton(
-                modifier = Modifier.padding(3.dp),
-                onClick = { navController.popBackStack() }
-            ) {
-                Icon(Icons.Outlined.ArrowBack, contentDescription = "Back")
-            }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    FilledTonalIconButton(
+                        modifier = Modifier.padding(3.dp),
+                        onClick = { navController.popBackStack() }
+                    ) {
+                        Icon(Icons.Outlined.ArrowBack, contentDescription = "Back")
+                    }
+                    if(watchable.data?.favorite == true){
+                        Checkbox(
+                            checked = watchable.data?.watched ?: false,
+                            onCheckedChange = {
+                                if (watchable.data?.watched == false){
+                                    watchlistViewModel.addWatched(watchableId ?: -1)
+                                } else {
+                                    watchlistViewModel.removeWatched(watchableId ?: -1)
+                                }
+                            }
+                        )
+                    }
+
+                }
         }
         Column(
             modifier = Modifier
@@ -104,6 +129,10 @@ fun DetailScreen(
                         color = MaterialTheme.colors.primary,
                         fontSize = MaterialTheme.typography.h4.fontSize,
                         fontWeight = FontWeight.Bold
+                    )
+                    Divider(
+                        modifier = Modifier
+                            .padding(0.dp, 10.dp, 0.dp, 10.dp)
                     )
                     Text(
                         text = watchable.data?.releaseDate.toString().plus(" · ")
@@ -163,15 +192,54 @@ fun DetailScreen(
                 }
                 Text(text = "(".plus(watchable.data?.voteCount.toString() ?: "").plus(" Votes)"))
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Button(onClick = { /* Do something! */ }) {
-                    Icon(Icons.Default.Add, "Add")
-                    Text("Add to Watchlist")
+            if (watchable.data?.favorite == true){
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(onClick = {
+                        watchlistViewModel.removeFavorite(watchableId ?: -1)
+                        scope.launch {
+                            snackbarHostState.showSnackbar("Removed from watchlist")
+                        }
+                    }) {
+                        Icon(Icons.Default.Delete, "Remove")
+                        Text("   Remove to Watchlist")
+                    }
                 }
+                SnackbarHost(
+                    hostState = snackbarHostState,
+                    snackbar = { SnackbarData -> Snackbar(
+                        snackbarData = SnackbarData,
+                        containerColor = Color.Green,
+                        contentColor = Color.DarkGray
+                    ) }
+                )
+            }else{
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(onClick = {
+                        watchlistViewModel.addFavorite(watchableId ?: -1)
+                        scope.launch {
+                            snackbarHostState.showSnackbar("Added to watchlist")
+                        }
+                    }) {
+                        Icon(Icons.Default.Add, "Add")
+                        Text("Add to Watchlist")
+                    }
+                }
+                SnackbarHost(
+                    hostState = snackbarHostState,
+                    snackbar = { SnackbarData -> Snackbar(
+                        snackbarData = SnackbarData,
+                        containerColor = Color.Green,
+                        contentColor = Color.DarkGray
+                    ) }
+                )
             }
         }
         }
@@ -179,7 +247,6 @@ fun DetailScreen(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
 fun detailPreview() {
