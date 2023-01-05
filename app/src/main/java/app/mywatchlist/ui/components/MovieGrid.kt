@@ -15,7 +15,7 @@ fun MovieGrid(navController: NavController, uiState: List<Watchable>){
 
     LazyVerticalGrid(columns = GridCells.Fixed(2),
                 content = {
-                    items(uiState ?: listOf()) { watchable ->
+                    items(uiState) { watchable ->
                         MovieCard(
                             navController,
                             watchable

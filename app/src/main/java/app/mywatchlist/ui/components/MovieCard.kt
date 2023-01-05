@@ -48,18 +48,5 @@ fun MovieCard(navController: NavController, watchable: Watchable) {
                 placeholder = painterResource(R.drawable.blank_movie_poster),
             )
         }
-        Row(
-            horizontalArrangement = Arrangement.End,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-        ) {
-            FilledTonalIconButton(onClick = { /*Do sth*/ }) {
-                Icon(
-                    Icons.Outlined.Add, contentDescription = "Add to myWatchlist",
-                    modifier = Modifier.padding(3.dp)
-                )
-            }
-        }
     }
 }

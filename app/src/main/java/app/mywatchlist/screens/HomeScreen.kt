@@ -117,16 +117,6 @@ fun HomeScreen(
             }else{
                 MovieGrid(navController, uiState.data!!)
             }
-
-//            LazyVerticalGrid(columns = GridCells.Fixed(2),
-//                content = {
-//                    items(uiState.data ?: listOf()) { watchable ->
-//                        MovieCard(
-//                            navController,
-//                            watchable
-//                        )
-//                    }
-//                })
         }
     }
 }
