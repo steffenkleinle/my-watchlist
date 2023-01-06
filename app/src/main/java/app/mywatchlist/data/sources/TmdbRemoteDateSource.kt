@@ -2,10 +2,8 @@ package app.mywatchlist.data.sources
 
 import android.content.Context
 import app.mywatchlist.BuildConfig
-import app.mywatchlist.data.models.Provider
 import app.mywatchlist.data.models.Providers
 import app.mywatchlist.data.models.RawWatchable
-import app.mywatchlist.data.models.Watchable
 import app.mywatchlist.utils.hasNetwork
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.Json
@@ -99,77 +97,28 @@ interface TmdbApiService {
 
     @GET("movie/{id}/watch/providers$API_KEY_QUERY_PARAM")
     suspend fun getProviders(@Path("id") id: Int): Response<Results<Map<String, Providers>>>
-
-    @GET("watch/providers/movie$API_KEY_QUERY_PARAM")
-    suspend fun getProviders(
-        @Query("language") language: String,
-        @Query("watch_region") region: String
-    ): Response<Results<List<Provider>>>
 }
 
 class TmdbRemoteDateSource @Inject constructor(
-    private val favoritesLocalDataSource: FavoritesLocalDataSource,
-    private val watchedLocalDataSource: WatchedLocalDataSource,
     @ApplicationContext applicationContext: Context
 ) {
     private val tmdbApiService: TmdbApiService by lazy {
         setupRetrofit(applicationContext).create(TmdbApiService::class.java)
     }
 
-    suspend fun getTrending(page: Int, language: String = LANGUAGE): List<Watchable> {
-        val favorites = favoritesLocalDataSource.get()
-        val watched = watchedLocalDataSource.get()
-        return rawTrending(page, language).map {
-            Watchable(
-                it,
-                getProviders(it.id),
-                favorites.contains(it.id),
-                watched.contains(it.id)
-            )
-        }
-    }
+    suspend fun getTrending(page: Int, language: String = LANGUAGE): List<RawWatchable> =
+        rawTrending(page, language).map { it.copy(providers = getProviders(it.id)) }
 
-    suspend fun getFavorites(language: String = LANGUAGE): List<Watchable> {
-        val favorites = favoritesLocalDataSource.get()
-        val watched = watchedLocalDataSource.get()
-        return favorites.map {
-            Watchable(
-                rawDetails(it, language),
-                getProviders(it),
-                favorites.contains(it),
-                watched.contains(it)
-            )
-        }
-    }
-
-    suspend fun getDetail(id: Int, language: String = LANGUAGE): Watchable {
-        val favorites = favoritesLocalDataSource.get()
-        val watched = watchedLocalDataSource.get()
-        return Watchable(
-            rawDetails(id, language),
-            getProviders(id),
-            favorites.contains(id),
-            watched.contains(id)
-        )
-    }
+    suspend fun getDetail(id: Int, language: String = LANGUAGE): RawWatchable =
+        rawDetails(id, language).copy(providers = getProviders(id))
 
     suspend fun search(
         query: String,
         page: Int,
         language: String = LANGUAGE,
         region: String = REGION
-    ): List<Watchable> {
-        val favorites = favoritesLocalDataSource.get()
-        val watched = watchedLocalDataSource.get()
-        return rawSearch(query, page, language, region).map {
-            Watchable(
-                it,
-                getProviders(it.id),
-                favorites.contains(it.id),
-                watched.contains(it.id)
-            )
-        }
-    }
+    ): List<RawWatchable> =
+        rawSearch(query, page, language, region).map { it.copy(providers = getProviders(it.id)) }
 
     private suspend fun rawTrending(page: Int, language: String = LANGUAGE): List<RawWatchable> =
         withContext(Dispatchers.IO) {
@@ -196,19 +145,9 @@ class TmdbRemoteDateSource @Inject constructor(
                 ?: throw Error(response.message())
         }
 
-    suspend fun getProviders(watchableId: Int): Map<String, Providers> =
+    private suspend fun getProviders(watchableId: Int): Map<String, Providers> =
         withContext(Dispatchers.IO) {
             val response = tmdbApiService.getProviders(watchableId)
-            response.body()?.results
-                ?: throw Error(response.message())
-        }
-
-    suspend fun getProviders(
-        language: String = LANGUAGE,
-        region: String = REGION
-    ): List<Provider> =
-        withContext(Dispatchers.IO) {
-            val response = tmdbApiService.getProviders(language, region)
             response.body()?.results
                 ?: throw Error(response.message())
         }

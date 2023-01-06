@@ -3,7 +3,9 @@ package app.mywatchlist.ui.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.mywatchlist.data.models.Watchable
+import app.mywatchlist.data.repositories.FavoritesRepository
 import app.mywatchlist.data.repositories.WatchablesRepository
+import app.mywatchlist.data.repositories.WatchedRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +16,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WatchableDetailViewModel @Inject constructor(
-    private val repository: WatchablesRepository
+    private val repository: WatchablesRepository,
+    private val favoritesRepository: FavoritesRepository,
+    private val watchedRepository: WatchedRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ResultUiState<Watchable>(loading = true))
     val uiState = _uiState.asStateFlow()
@@ -36,7 +40,12 @@ class WatchableDetailViewModel @Inject constructor(
                 it.copy(loading = true, data = null, error = null)
             }
             try {
-                val watchable = repository.getDetails(id)
+                val rawWatchable = repository.getDetails(id)
+                val watchable = Watchable(
+                    rawWatchable,
+                    favoritesRepository.get().contains(id),
+                    watchedRepository.get().contains(id)
+                )
                 _uiState.update {
                     it.copy(data = watchable, loading = false)
                 }
@@ -49,18 +58,22 @@ class WatchableDetailViewModel @Inject constructor(
     }
 
     fun addFavorite(id: Int) = viewModelScope.launch {
-        repository.favorites.add(id)
+        _uiState.update { it.copy(data = it.data?.copy(favorite = true)) }
+        favoritesRepository.add(id)
     }
 
     fun removeFavorite(id: Int) = viewModelScope.launch {
-        repository.favorites.remove(id)
+        _uiState.update { it.copy(data = it.data?.copy(favorite = false)) }
+        favoritesRepository.remove(id)
     }
 
     fun addWatched(id: Int) = viewModelScope.launch {
-        repository.watched.add(id)
+        _uiState.update { it.copy(data = it.data?.copy(watched = true)) }
+        watchedRepository.add(id)
     }
 
     fun removeWatched(id: Int) = viewModelScope.launch {
-        repository.watched.remove(id)
+        _uiState.update { it.copy(data = it.data?.copy(watched = false)) }
+        watchedRepository.remove(id)
     }
 }
