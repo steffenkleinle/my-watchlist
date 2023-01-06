@@ -23,46 +23,33 @@ fun Watchlist(navController: NavController, watchlistViewModel: WatchlistViewMod
 
     val uiState by watchlistViewModel.uiState.collectAsState()
 
-    if (uiState.data.isNullOrEmpty()) {
-        Box(
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(0.dp, 10.dp, 0.dp, 70.dp),
+    ) {
+        Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(0.dp, 10.dp, 0.dp, 70.dp),
-            contentAlignment = Alignment.Center
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.Top
         ) {
-            Text(
-                stringResource(R.string.no_movies_yet),
-                color = MaterialTheme.colors.onBackground,
-                fontSize = MaterialTheme.typography.h6.fontSize,
-            )
-        }
-    } else {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(0.dp, 10.dp, 0.dp, 70.dp),
-        ) {
-            Column(
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.Top
+                    .fillMaxWidth()
+                    .padding(0.dp, 0.dp, 0.dp, 5.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(
+                Text(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(0.dp, 0.dp, 0.dp, 5.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .padding(5.dp, 0.dp, 5.dp, 15.dp),
-                        text = stringResource(R.string.watchlist),
-                        color = MaterialTheme.colors.onBackground,
-                        fontSize = MaterialTheme.typography.h4.fontSize,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-                if (uiState.loading || uiState.data.isNullOrEmpty()) {
+                        .padding(5.dp, 0.dp, 5.dp, 15.dp),
+                    text = stringResource(R.string.watchlist),
+                    color = MaterialTheme.colors.onBackground,
+                    fontSize = MaterialTheme.typography.h4.fontSize,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+                if (uiState.loading) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         LinearProgressIndicator(
                             modifier = Modifier
@@ -71,9 +58,24 @@ fun Watchlist(navController: NavController, watchlistViewModel: WatchlistViewMod
                         )
                     }
                 } else {
-                    MovieGrid(navController, uiState.data!!)
+                    if (uiState.data.isNullOrEmpty()){
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(0.dp, 10.dp, 0.dp, 70.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            stringResource(R.string.no_movies_yet),
+                            color = MaterialTheme.colors.onBackground,
+                            fontSize = MaterialTheme.typography.h6.fontSize,
+                        )
+                    }
+                    }else {
+                        MovieGrid(navController, uiState.data!!)
+                    }
                 }
             }
         }
     }
-}
+
