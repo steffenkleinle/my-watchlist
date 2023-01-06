@@ -25,11 +25,6 @@ sealed class Screen(val route: String){
         "My Watchlist",
         Icons.Default.Star
     )
-    object Profile: BottomBarScreen(
-        "profile",
-        "Profile",
-        Icons.Default.Person
-    )
 
     object Details: Screen("detail_screen/{$DETAIL_ARGUMENT_KEY}"){
         fun passId(id: Int): String {
