@@ -23,9 +23,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import app.mywatchlist.screens.MainScreen
 import app.mywatchlist.ui.theme.MyWatchlistTheme
-import app.mywatchlist.utils.ConnectivityObserver
-import app.mywatchlist.utils.NetworkConnectivityObserver
-import app.mywatchlist.utils.networkStatus
+import app.mywatchlist.utils.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -51,11 +49,11 @@ object DataStoreModule {
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        schedulePushNotifications(this)
+        notify(this, "Test", "Test content")
         val connectivityObserver = NetworkConnectivityObserver(applicationContext)
 
         setContent {

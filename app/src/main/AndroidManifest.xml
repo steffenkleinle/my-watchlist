@@ -6,12 +6,12 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".MyWatchlistApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name=".MyWatchlistApplication"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyWatchlist"
@@ -19,7 +19,6 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.MyWatchlist">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,6 +30,19 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
+        <receiver
+            android:name="app.mywatchlist.utils.AlarmReceiver"
+            android:enabled="true" />
+
+        <receiver
+            android:name="app.mywatchlist.utils.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
