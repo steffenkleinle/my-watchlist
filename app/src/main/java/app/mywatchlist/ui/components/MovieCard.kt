@@ -59,13 +59,12 @@ fun MovieCard(
                     placeholder = painterResource(R.drawable.blank_movie_poster),
                 )
                 Checkbox(
-                    checked = watchable.watched ?: false,
+                    checked = watchable.watched,
                     enabled = false,
                     onCheckedChange = {/* Do nothing */},
                     colors = CheckboxDefaults.colors(
-
-                        disabledCheckedColor = MaterialTheme.colors.secondary,
-                        disabledUncheckedColor = MaterialTheme.colors.secondary,
+                        disabledCheckedColor = if (watchable.favorite)  MaterialTheme.colors.primary else MaterialTheme.colors.secondary,
+                        disabledUncheckedColor = if (watchable.favorite) MaterialTheme.colors.primary else MaterialTheme.colors.secondary,
                         checkmarkColor = MaterialTheme.colors.background
                 ),
                 )
