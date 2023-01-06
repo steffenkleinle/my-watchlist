@@ -2,7 +2,7 @@ package app.mywatchlist.data.sources
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import app.mywatchlist.data.models.Watchable
+import app.mywatchlist.data.models.RawWatchable
 import javax.inject.Inject
 
 private const val FIRST_PAGE = 1
@@ -11,8 +11,8 @@ class TmdbRemotePagingDataSource @Inject constructor(
     private val tmdbRemoteDateSource: TmdbRemoteDateSource,
     private val query: String?
 ) :
-    PagingSource<Int, Watchable>() {
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Watchable> {
+    PagingSource<Int, RawWatchable>() {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, RawWatchable> {
         return try {
             val page = params.key ?: FIRST_PAGE
             return LoadResult.Page(
@@ -28,5 +28,5 @@ class TmdbRemotePagingDataSource @Inject constructor(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Watchable>): Int = FIRST_PAGE
+    override fun getRefreshKey(state: PagingState<Int, RawWatchable>): Int = FIRST_PAGE
 }

@@ -1,4 +1,4 @@
-package app.mywatchlist.data.sources
+package app.mywatchlist.data.repositories
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -11,11 +11,11 @@ import kotlinx.coroutines.flow.map
 import java.io.IOException
 import javax.inject.Inject
 
-open class IntListLocalDataSource(
+open class IntListRepository(
     private val dataStore: DataStore<Preferences>,
     private val key: Preferences.Key<Set<String>>
 ) {
-    private val flow = dataStore.data
+    val flow = dataStore.data
         .catch { exception ->
             if (exception is IOException) {
                 emit(emptyPreferences())
@@ -48,8 +48,8 @@ open class IntListLocalDataSource(
     }
 }
 
-class FavoritesLocalDataSource @Inject constructor(dataStore: DataStore<Preferences>) :
-    IntListLocalDataSource(dataStore, PreferencesDataStoreKeys.FAVORITES)
+class FavoritesRepository @Inject constructor(dataStore: DataStore<Preferences>) :
+    IntListRepository(dataStore, PreferencesDataStoreKeys.FAVORITES)
 
-class WatchedLocalDataSource @Inject constructor(dataStore: DataStore<Preferences>) :
-    IntListLocalDataSource(dataStore, PreferencesDataStoreKeys.WATCHED)
+class WatchedRepository @Inject constructor(dataStore: DataStore<Preferences>) :
+    IntListRepository(dataStore, PreferencesDataStoreKeys.WATCHED)
