@@ -1,18 +1,14 @@
 package app.mywatchlist.screens
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.LinearProgressIndicator
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,29 +16,22 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import app.mywatchlist.R
-import app.mywatchlist.Screen
-import app.mywatchlist.data.models.Watchable
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
 import app.mywatchlist.ui.components.MovieGrid
 import app.mywatchlist.ui.viewModels.WatchablesViewModel
-import coil.compose.AsyncImage
-
 
 @Composable
 fun HomeScreen(
     navController: NavController,
     watchablesViewModel: WatchablesViewModel
 ) {
-    val uiState by watchablesViewModel.uiState.collectAsState()
+    val watchables = watchablesViewModel.items.collectAsLazyPagingItems()
     val query by watchablesViewModel.queryUiState.collectAsState()
-    Log.d("Home Screen UI State: ", uiState.toString())
-
     val showSearchInput = query != null
 
     Box(
@@ -106,7 +95,7 @@ fun HomeScreen(
                     }
                 )
             }
-            if (uiState.loading || uiState.data.isNullOrEmpty()) {
+            if (watchables.loadState.refresh is LoadState.Loading) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     LinearProgressIndicator(
                         modifier = Modifier
@@ -114,8 +103,8 @@ fun HomeScreen(
                             .fillMaxWidth(),
                     )
                 }
-            }else{
-                MovieGrid(navController, uiState.data!!)
+            } else {
+                MovieGrid(navController, watchables)
             }
         }
     }

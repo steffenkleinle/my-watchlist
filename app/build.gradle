@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "app.mywatchlist"
-        minSdk 21
+        minSdk 26
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -62,6 +62,8 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
     implementation "androidx.navigation:navigation-compose:$nav_version"
+    implementation "androidx.paging:paging-compose:1.0.0-alpha17"
+    implementation "androidx.paging:paging-runtime:3.1.1"
     implementation 'com.squareup.moshi:moshi-kotlin:1.13.0'
     implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
     implementation 'androidx.navigation:navigation-common-ktx:2.5.3'
