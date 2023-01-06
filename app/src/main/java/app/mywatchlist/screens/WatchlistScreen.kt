@@ -30,7 +30,11 @@ fun Watchlist(navController: NavController, watchlistViewModel: WatchlistViewMod
                 .padding(0.dp, 10.dp, 0.dp, 70.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text(stringResource(R.string.no_movies_yet))
+            Text(
+                stringResource(R.string.no_movies_yet),
+                color = MaterialTheme.colors.onBackground,
+                fontSize = MaterialTheme.typography.h6.fontSize,
+            )
         }
     } else {
         Box(
@@ -53,7 +57,7 @@ fun Watchlist(navController: NavController, watchlistViewModel: WatchlistViewMod
                         modifier = Modifier
                             .padding(5.dp, 0.dp, 5.dp, 15.dp),
                         text = stringResource(R.string.watchlist),
-                        color = MaterialTheme.colors.primary,
+                        color = MaterialTheme.colors.onBackground,
                         fontSize = MaterialTheme.typography.h4.fontSize,
                         fontWeight = FontWeight.Bold
                     )

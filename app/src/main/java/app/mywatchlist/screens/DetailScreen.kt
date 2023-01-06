@@ -43,7 +43,7 @@ fun DetailScreen(
 ) {
 
     val watchable by watchableDetailViewModel.uiState.collectAsState()
-    var genreList: List<Genre> = emptyList<Genre>()
+    var genreList: List<Genre> = emptyList()
 
     if (watchableId != null) {
         watchableDetailViewModel.setId(watchableId)
@@ -53,7 +53,7 @@ fun DetailScreen(
     val scope = rememberCoroutineScope()
 
     if (!watchable.data?.genres.isNullOrEmpty()) {
-        genreList = watchable.data?.genres?.toList() ?: emptyList<Genre>()
+        genreList = watchable.data?.genres?.toList() ?: emptyList()
     }
 
     if(watchable.loading){
@@ -62,7 +62,9 @@ fun DetailScreen(
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ){
-            CircularProgressIndicator()
+            CircularProgressIndicator(
+                color = MaterialTheme.colors.primary
+            )
         }
     } else {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
@@ -76,7 +78,8 @@ fun DetailScreen(
                     )
                     Text(
                         text = watchable.data?.title ?: "",
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colors.onSurface
                     )
                 }
             }
@@ -96,19 +99,6 @@ fun DetailScreen(
                     ) {
                         Icon(Icons.Outlined.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
-                    if(watchable.data?.favorite == true){
-                        Checkbox(
-                            checked = watchable.data?.watched ?: false,
-                            onCheckedChange = {
-                                if (watchable.data?.watched == false){
-                                    watchlistViewModel.addWatched(watchableId ?: -1)
-                                } else {
-                                    watchlistViewModel.removeWatched(watchableId ?: -1)
-                                }
-                            }
-                        )
-                    }
-
                 }
         }
         Column(
@@ -118,22 +108,42 @@ fun DetailScreen(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column {
-                    Text(
-                        text = watchable.data?.title ?: "",
-                        color = MaterialTheme.colors.primary,
-                        fontSize = MaterialTheme.typography.h4.fontSize,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                            Checkbox(
+                                colors = CheckboxDefaults.colors(
+                                    checkedColor = MaterialTheme.colors.primary,
+                                    uncheckedColor = MaterialTheme.colors.primary,
+                                    checkmarkColor = MaterialTheme.colors.background
+                                ),
+                                checked = watchable.data?.watched ?: false,
+                                onCheckedChange = {
+                                    if (watchable.data?.watched == false) {
+                                        watchlistViewModel.addWatched(watchableId ?: -1)
+                                    } else {
+                                        watchlistViewModel.removeWatched(watchableId ?: -1)
+                                    }
+                                }
+                            )
+                        Text(
+                            text = watchable.data?.title ?: "",
+                            color = MaterialTheme.colors.onSurface,
+                            fontSize = MaterialTheme.typography.h4.fontSize,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
                     Divider(
                         modifier = Modifier
                             .padding(0.dp, 10.dp, 0.dp, 10.dp)
                     )
                     Text(
-                        text = stringResource(R.string.runtime_plus_release, watchable.data?.releaseDate.toString(), watchable.data?.runtime.toString())
+                        text = stringResource(R.string.runtime_plus_release, watchable.data?.releaseDate.toString(), watchable.data?.runtime.toString()),
+                        color = MaterialTheme.colors.onSurface
                     )
                     LazyRow() {
                         itemsIndexed(genreList) { index, item ->
@@ -141,7 +151,10 @@ fun DetailScreen(
                                 modifier = Modifier
                                     .padding(2.dp, 0.dp, 2.dp, 0.dp),
                                 onClick = { /* Do something! */ },
-                                label = { Text(item.name) }
+                                label = { Text(
+                                    text = item.name,
+                                    color = MaterialTheme.colors.onSurface
+                                ) }
                             )
                         }
                     }
@@ -155,14 +168,16 @@ fun DetailScreen(
             Text(
                 text = stringResource(R.string.overview),
                 fontSize = MaterialTheme.typography.h6.fontSize,
-                color = Color.Black
+                color = MaterialTheme.colors.onSurface
             )
             Text(
                 text = watchable.data?.tagline ?: "",
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colors.onSurface
             )
             Text(
-                text = watchable.data?.overview ?: ""
+                text = watchable.data?.overview ?: "",
+                color = MaterialTheme.colors.onSurface
             )
 
             Divider(
@@ -172,22 +187,30 @@ fun DetailScreen(
             Text(
                 text = stringResource(R.string.vote),
                 fontSize = MaterialTheme.typography.h6.fontSize,
-                color = Color.Black
+                color = MaterialTheme.colors.onSurface
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                Icon(Icons.Default.Star, stringResource(R.string.vote))
+                Icon(
+                    Icons.Default.Star,
+                    stringResource(R.string.vote),
+                    tint = MaterialTheme.colors.onSurface
+                )
                 if (watchable.data != null) {
                     Text(
                         text = (round(watchable.data!!.voteAverage * 100) / 100).toString(),
                         fontSize = MaterialTheme.typography.h6.fontSize,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(0.dp, 0.dp, 5.dp, 0.dp)
+                        modifier = Modifier.padding(0.dp, 0.dp, 5.dp, 0.dp),
+                        color = MaterialTheme.colors.onSurface
                     )
                 }
-                Text(stringResource(R.string.votecount, watchable.data?.voteCount.toString()))
+                Text(
+                    text = stringResource(R.string.votecount, watchable.data?.voteCount.toString()),
+                    color = MaterialTheme.colors.onSurface
+                )
             }
             if (watchable.data?.favorite == true){
                 Row(
@@ -195,22 +218,29 @@ fun DetailScreen(
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Button(onClick = {
+                    Button(
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colors.primary,
+                            contentColor = MaterialTheme.colors.background
+                        ),
+                        onClick = {
                         watchlistViewModel.removeFavorite(watchableId ?: -1)
                         scope.launch {
                             snackbarHostState.showSnackbar(message = "Removed from watchlist")
                         }
                     }) {
                         Icon(Icons.Default.Delete, "Remove")
-                        Text(stringResource(R.string.remove_from_watchlist))
+                        Text(
+                            text = stringResource(R.string.remove_from_watchlist),
+                        )
                     }
                 }
                 SnackbarHost(
                     hostState = snackbarHostState,
                     snackbar = { SnackbarData -> Snackbar(
                         snackbarData = SnackbarData,
-                        containerColor = Color.Green,
-                        contentColor = Color.DarkGray
+                        containerColor = MaterialTheme.colors.onPrimary,
+                        contentColor = MaterialTheme.colors.onBackground
                     ) }
                 )
             }else{
@@ -219,7 +249,12 @@ fun DetailScreen(
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Button(onClick = {
+                    Button(
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colors.primary,
+                            contentColor = MaterialTheme.colors.background
+                        ),
+                        onClick = {
                         watchlistViewModel.addFavorite(watchableId ?: -1)
                         scope.launch {
                             snackbarHostState.showSnackbar(message = "Added to watchlist")
@@ -233,8 +268,8 @@ fun DetailScreen(
                     hostState = snackbarHostState,
                     snackbar = { SnackbarData -> Snackbar(
                         snackbarData = SnackbarData,
-                        containerColor = Color.Green,
-                        contentColor = Color.DarkGray
+                        containerColor = MaterialTheme.colors.onPrimary,
+                        contentColor = MaterialTheme.colors.onBackground
                     ) }
                 )
             }

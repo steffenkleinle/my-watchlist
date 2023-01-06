@@ -1,11 +1,14 @@
 package app.mywatchlist.screens
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -54,11 +57,15 @@ fun RowScope.AddItem(
     navController: NavHostController
 ) {
     BottomNavigationItem(
+        modifier = Modifier.background(MaterialTheme.colors.onSecondary),
         label = {
             Text(screen.title)
         },
         icon = {
-            Icon(screen.icon, "navigation_icon")
+            Icon(
+                screen.icon, "navigation_icon",
+                tint = MaterialTheme.colors.onSurface
+            )
         },
         selected = currentDestination?.hierarchy?.any {
             it.route == screen.route
@@ -68,6 +75,8 @@ fun RowScope.AddItem(
                 popUpTo(navController.graph.findStartDestination().id)
                 launchSingleTop = true
             }
-        }
+        },
+        selectedContentColor = MaterialTheme.colors.onSurface,
+        unselectedContentColor = Color.DarkGray
     )
 }
