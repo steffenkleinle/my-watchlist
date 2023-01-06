@@ -9,10 +9,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import app.mywatchlist.R
 import app.mywatchlist.ui.components.MovieGrid
 import app.mywatchlist.ui.viewModels.WatchlistViewModel
 
@@ -21,44 +23,57 @@ fun Watchlist(navController: NavController, watchlistViewModel: WatchlistViewMod
 
     val uiState by watchlistViewModel.uiState.collectAsState()
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(0.dp, 10.dp, 0.dp, 70.dp),
-    ) {
-        Column(
+    if (uiState.data.isNullOrEmpty()) {
+        Box(
             modifier = Modifier
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.Top
+                .fillMaxSize()
+                .padding(0.dp, 10.dp, 0.dp, 70.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Row(
+            Text(
+                stringResource(R.string.no_movies_yet),
+                color = MaterialTheme.colors.onBackground,
+                fontSize = MaterialTheme.typography.h6.fontSize,
+            )
+        }
+    } else {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(0.dp, 10.dp, 0.dp, 70.dp),
+        ) {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(0.dp, 0.dp, 0.dp, 5.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.Top
             ) {
-                Text(
+                Row(
                     modifier = Modifier
-                        .padding(5.dp, 0.dp, 5.dp, 15.dp),
-                    text = "Watchlist",
-                    color = MaterialTheme.colors.primary,
-                    fontSize = MaterialTheme.typography.h4.fontSize,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            // TODO Show no items message if empty
-            if (uiState.loading || uiState.data.isNullOrEmpty()) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    LinearProgressIndicator(
+                        .fillMaxWidth()
+                        .padding(0.dp, 0.dp, 0.dp, 5.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
                         modifier = Modifier
-                            .semantics(mergeDescendants = true) {}
-                            .fillMaxWidth(),
+                            .padding(5.dp, 0.dp, 5.dp, 15.dp),
+                        text = stringResource(R.string.watchlist),
+                        color = MaterialTheme.colors.onBackground,
+                        fontSize = MaterialTheme.typography.h4.fontSize,
+                        fontWeight = FontWeight.Bold
                     )
                 }
-            } else {
-                MovieGrid(navController, uiState.data!!)
+                if (uiState.loading || uiState.data.isNullOrEmpty()) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        LinearProgressIndicator(
+                            modifier = Modifier
+                                .semantics(mergeDescendants = true) {}
+                                .fillMaxWidth(),
+                        )
+                    }
+                } else {
+                    MovieGrid(navController, uiState.data!!)
+                }
             }
         }
     }
 }
-

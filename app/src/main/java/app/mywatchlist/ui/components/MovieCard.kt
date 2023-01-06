@@ -5,9 +5,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -57,9 +59,14 @@ fun MovieCard(
                     placeholder = painterResource(R.drawable.blank_movie_poster),
                 )
                 Checkbox(
-                    checked = watchable.watched ?: false,
+                    checked = watchable.watched,
                     enabled = false,
-                    onCheckedChange = {/* Do nothing */}
+                    onCheckedChange = {/* Do nothing */},
+                    colors = CheckboxDefaults.colors(
+                        disabledCheckedColor = if (watchable.favorite)  MaterialTheme.colors.primary else MaterialTheme.colors.secondary,
+                        disabledUncheckedColor = if (watchable.favorite) MaterialTheme.colors.primary else MaterialTheme.colors.secondary,
+                        checkmarkColor = MaterialTheme.colors.background
+                ),
                 )
             }
         }

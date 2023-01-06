@@ -22,6 +22,7 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import app.mywatchlist.screens.MainScreen
+import app.mywatchlist.ui.theme.MyWatchlistTheme
 import app.mywatchlist.utils.ConnectivityObserver
 import app.mywatchlist.utils.NetworkConnectivityObserver
 import app.mywatchlist.utils.networkStatus
@@ -79,7 +80,9 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-            MainScreen()
+            MyWatchlistTheme{
+                MainScreen()
+            }
         }
     }
 }
