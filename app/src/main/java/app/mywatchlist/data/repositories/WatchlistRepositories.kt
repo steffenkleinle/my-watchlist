@@ -1,4 +1,4 @@
-package app.mywatchlist.data.sources
+package app.mywatchlist.data.repositories
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -6,11 +6,12 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import app.mywatchlist.data.PreferencesDataStoreKeys
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 import javax.inject.Inject
 
-open class IntListLocalDataSource(
+open class IntListRepository(
     private val dataStore: DataStore<Preferences>,
     private val key: Preferences.Key<Set<String>>
 ) {
@@ -25,6 +26,8 @@ open class IntListLocalDataSource(
         .map { preferences ->
             preferences[key]?.map { it.toInt() } ?: listOf()
         }
+
+    suspend fun get(): List<Int> = flow.first()
 
     suspend fun add(id: Int) {
         flow.collect {
@@ -45,8 +48,8 @@ open class IntListLocalDataSource(
     }
 }
 
-class FavoritesLocalDataSource @Inject constructor(dataStore: DataStore<Preferences>) :
-    IntListLocalDataSource(dataStore, PreferencesDataStoreKeys.FAVORITES)
+class FavoritesRepository @Inject constructor(dataStore: DataStore<Preferences>) :
+    IntListRepository(dataStore, PreferencesDataStoreKeys.FAVORITES)
 
-class WatchedLocalDataSource @Inject constructor(dataStore: DataStore<Preferences>) :
-    IntListLocalDataSource(dataStore, PreferencesDataStoreKeys.WATCHED)
+class WatchedRepository @Inject constructor(dataStore: DataStore<Preferences>) :
+    IntListRepository(dataStore, PreferencesDataStoreKeys.WATCHED)

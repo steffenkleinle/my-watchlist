@@ -38,8 +38,7 @@ import kotlin.math.round
 fun DetailScreen(
     navController: NavController,
     watchableId: Int?,
-    watchableDetailViewModel: WatchableDetailViewModel = viewModel(),
-    watchlistViewModel: WatchlistViewModel = viewModel()
+    watchableDetailViewModel: WatchableDetailViewModel
 ) {
 
     val watchable by watchableDetailViewModel.uiState.collectAsState()
@@ -124,9 +123,9 @@ fun DetailScreen(
                                 checked = watchable.data?.watched ?: false,
                                 onCheckedChange = {
                                     if (watchable.data?.watched == false) {
-                                        watchlistViewModel.addWatched(watchableId ?: -1)
+                                        watchableDetailViewModel.addWatched(watchableId ?: -1)
                                     } else {
-                                        watchlistViewModel.removeWatched(watchableId ?: -1)
+                                        watchableDetailViewModel.removeWatched(watchableId ?: -1)
                                     }
                                 }
                             )
@@ -224,7 +223,7 @@ fun DetailScreen(
                             contentColor = MaterialTheme.colors.background
                         ),
                         onClick = {
-                        watchlistViewModel.removeFavorite(watchableId ?: -1)
+                            watchableDetailViewModel.removeFavorite(watchableId ?: -1)
                         scope.launch {
                             snackbarHostState.showSnackbar(message = "Removed from watchlist")
                         }
@@ -255,7 +254,7 @@ fun DetailScreen(
                             contentColor = MaterialTheme.colors.background
                         ),
                         onClick = {
-                        watchlistViewModel.addFavorite(watchableId ?: -1)
+                            watchableDetailViewModel.addFavorite(watchableId ?: -1)
                         scope.launch {
                             snackbarHostState.showSnackbar(message = "Added to watchlist")
                         }

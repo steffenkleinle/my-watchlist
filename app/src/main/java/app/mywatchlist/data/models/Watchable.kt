@@ -3,10 +3,6 @@ package app.mywatchlist.data.models
 import com.squareup.moshi.Json
 import java.time.LocalDate
 
-enum class WatchableType {
-    movie, tv
-}
-
 data class Genre(
     val id: Int,
     val name: String
@@ -17,7 +13,6 @@ data class RawWatchable(
     @Json val title: String,
     @Json val overview: String,
     @Json(name = "original_title") val originalTitle: String,
-    @Json(name = "media_type") val type: WatchableType = WatchableType.movie,
     @Json(name = "poster_path") val posterPath: String?,
     @Json(name = "backdrop_path") val backdropPath: String?,
     @Json(name = "release_date") val releaseDate: LocalDate?,
@@ -25,7 +20,8 @@ data class RawWatchable(
     @Json(name = "vote_count") val voteCount: Int,
     @Json val runtime: Int?,
     @Json val tagline: String?,
-    @Json val genres: List<Genre>?
+    @Json val genres: List<Genre>?,
+    val providers: Map<String, Providers>?
 )
 
 data class Watchable(
@@ -33,7 +29,6 @@ data class Watchable(
     val title: String,
     val overview: String,
     val originalTitle: String,
-    val type: WatchableType,
     val posterPath: String?,
     val backdropPath: String?,
     val releaseDate: LocalDate?,
@@ -48,7 +43,6 @@ data class Watchable(
 ) {
     constructor(
         rawWatchable: RawWatchable,
-        providers: Map<String, Providers>,
         favorite: Boolean,
         watched: Boolean
     ) : this(
@@ -56,7 +50,6 @@ data class Watchable(
         title = rawWatchable.title,
         overview = rawWatchable.overview,
         originalTitle = rawWatchable.originalTitle,
-        type = rawWatchable.type,
         posterPath = rawWatchable.posterPath,
         backdropPath = rawWatchable.backdropPath,
         releaseDate = rawWatchable.releaseDate,
@@ -65,7 +58,7 @@ data class Watchable(
         runtime = rawWatchable.runtime,
         tagline = rawWatchable.tagline,
         genres = rawWatchable.genres,
-        providers = providers,
+        providers = rawWatchable.providers!!,
         favorite = favorite,
         watched = watched
     )
