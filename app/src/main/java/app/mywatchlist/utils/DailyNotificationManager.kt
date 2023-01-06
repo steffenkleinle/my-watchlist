@@ -12,7 +12,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import app.mywatchlist.MainActivity
 import app.mywatchlist.R
-import java.util.*
+import java.time.ZonedDateTime
 
 private const val CHANNEL_ID = "default"
 private const val CHANNEL_NAME = "Default"
@@ -20,9 +20,7 @@ private const val CHANNEL_NAME = "Default"
 private const val NOTIFICATION_TITLE = "Today's Trending Movies"
 private const val NOTIFICATION_TEXT = "Click on the notification to see today's trending movies!"
 
-private const val HOUR_TO_SHOW_NOTIFICATION = 18
-
-fun notify(context: Context, title: String, text: String) {
+fun notify(context: Context, title: String = NOTIFICATION_TITLE, text: String = NOTIFICATION_TEXT) {
     val notificationPressedIntent = Intent(context, MainActivity::class.java).apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     }
@@ -66,21 +64,11 @@ fun schedulePushNotifications(context: Context) {
         PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
     }
 
-    val calendar = GregorianCalendar.getInstance().apply {
-        if (get(Calendar.HOUR_OF_DAY) >= HOUR_TO_SHOW_NOTIFICATION) {
-            add(Calendar.DAY_OF_MONTH, 1)
-        }
+    val scheduledTime = ZonedDateTime.now().plusDays(1).toInstant().toEpochMilli()
 
-        set(Calendar.HOUR_OF_DAY, HOUR_TO_SHOW_NOTIFICATION)
-        set(Calendar.MINUTE, 0)
-        set(Calendar.SECOND, 0)
-        set(Calendar.MILLISECOND, 0)
-    }
-
-    alarmManager.setRepeating(
+    alarmManager.setExact(
         AlarmManager.RTC_WAKEUP,
-        calendar.timeInMillis,
-        AlarmManager.INTERVAL_DAY,
+        scheduledTime,
         alarmPendingIntent
     )
 }
@@ -96,5 +84,6 @@ class BootReceiver : BroadcastReceiver() {
 class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         notify(context, NOTIFICATION_TITLE, NOTIFICATION_TEXT)
+        schedulePushNotifications(context)
     }
 }

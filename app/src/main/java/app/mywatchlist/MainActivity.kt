@@ -52,8 +52,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        schedulePushNotifications(this)
-        notify(this, "Test", "Test content")
         val connectivityObserver = NetworkConnectivityObserver(applicationContext)
 
         setContent {
