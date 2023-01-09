@@ -50,11 +50,11 @@ fun SetupNavGraph(navController: NavHostController) {
             Watchlist(navController, viewModel)
         }
         composable(
-            route = Screen.Share.route
+            route = Screen.Share.route,
         ){
             ShareScreen(
                 navController,
-                it.arguments?.getString(WATCHABLE_TO_SHARE)
+                it.arguments?.getString(WATCHABLE_TO_SHARE),
             )
         }
     }

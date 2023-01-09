@@ -21,6 +21,7 @@
     <string name="share_movie">Share Movie</string>
     <string name="select_Contact">Select Contact</string>
     <string name="share_with">Share with</string>
+    <string name="share_sms">Hey %1$s, checkout this movie I want to watch: %2$s</string>
 
 
 

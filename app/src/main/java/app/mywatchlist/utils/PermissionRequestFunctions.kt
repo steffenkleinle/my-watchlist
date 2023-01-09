@@ -17,3 +17,14 @@ fun requestContactPermission(context: Context, activity: Activity) {
         ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_CONTACTS), 1)
     }
 }
+
+fun hasSMSPermission(context: Context): Boolean{
+    return ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) ==
+            PackageManager.PERMISSION_GRANTED;
+}
+
+fun requestSMSPermission(context: Context, activity: Activity){
+    if (!hasSMSPermission(context)) {
+        ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.SEND_SMS), 1)
+    }
+}

@@ -8,7 +8,9 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.provider.ContactsContract
+import android.telephony.SmsManager
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
@@ -32,7 +34,10 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import app.mywatchlist.R
 import app.mywatchlist.utils.hasContactPermission
+import app.mywatchlist.utils.hasSMSPermission
 import app.mywatchlist.utils.requestContactPermission
+import app.mywatchlist.utils.requestSMSPermission
+import kotlinx.coroutines.launch
 
 @Composable
 fun ShareScreen (
@@ -84,7 +89,7 @@ fun ShareScreen (
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ){
-                contactPicker()
+                contactPicker(watchableTitle)
             }
         }
     }
@@ -94,13 +99,18 @@ fun ShareScreen (
 @SuppressLint("Range")
 @Composable
 fun contactPicker(
+    watchableTitle: String?,
 ) {
 
     var contactName by remember { mutableStateOf("") }
     var contactNumber by remember {  mutableStateOf("")}
+    val message = stringResource(R.string.share_sms, contactName, watchableTitle.toString())
     val activity = LocalContext.current as Activity
 
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
     val context = LocalContext.current
+
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickContact(),
         onResult = {
@@ -183,7 +193,23 @@ fun contactPicker(
         if (!contactName.isNullOrEmpty()){
             Button(
                 modifier = Modifier.padding(0.dp, 20.dp),
-                onClick = {/* Share */},
+                onClick = {
+                    if (hasSMSPermission(context)) {
+                        try {
+                            val smsManager: SmsManager = SmsManager.getDefault()
+                            smsManager.sendTextMessage(contactNumber, null, message, null, null)
+                            scope.launch {
+                                snackbarHostState.showSnackbar(message = "Message sent")
+                            }
+                        } catch (e: Exception) {
+                            scope.launch {
+                                snackbarHostState.showSnackbar(message = "Couldn't send message")
+                            }
+                        }
+                    } else {
+                        requestSMSPermission(context, activity)
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colors.primary,
                     contentColor = MaterialTheme.colors.background
@@ -195,6 +221,14 @@ fun contactPicker(
                     text = stringResource(R.string.share),
                 )
             }
+            SnackbarHost(
+                hostState = snackbarHostState,
+                snackbar = { SnackbarData -> Snackbar(
+                    snackbarData = SnackbarData,
+                    containerColor = MaterialTheme.colors.onPrimary,
+                    contentColor = MaterialTheme.colors.onBackground
+                ) }
+            )
         }
     }
 }
