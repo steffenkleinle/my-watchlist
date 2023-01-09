@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,7 +26,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import app.mywatchlist.R
+import app.mywatchlist.Screen
 import app.mywatchlist.data.models.Genre
 import app.mywatchlist.ui.viewModels.WatchableDetailViewModel
 import app.mywatchlist.ui.viewModels.WatchlistViewModel
@@ -88,15 +91,34 @@ fun DetailScreen(
                 placeholder = painterResource(R.drawable.blank_movie_backdrop)
             )
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(5.dp, 5.dp, 5.dp, 0.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     FilledTonalIconButton(
                         modifier = Modifier.padding(3.dp),
-                        onClick = { navController.popBackStack() }
+                        onClick = { navController.popBackStack() },
+                        colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = MaterialTheme.colors.background,
+                        contentColor = MaterialTheme.colors.onBackground
+                    )
                     ) {
                         Icon(Icons.Outlined.ArrowBack, contentDescription = stringResource(R.string.back))
+                    }
+                    FilledIconButton(
+                        onClick = {
+                            navController.navigate(route = Screen.Share.passWatchableTitle(watchable.data?.title ?: "WATCHABLE"))
+                          },
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = MaterialTheme.colors.background,
+                            contentColor = MaterialTheme.colors.primary
+                        )
+                    ) {
+                        Icon(
+                            Icons.Outlined.Share,
+                            contentDescription = stringResource(R.string.share),
+                        )
                     }
                 }
         }
