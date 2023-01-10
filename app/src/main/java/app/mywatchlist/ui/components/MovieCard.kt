@@ -57,7 +57,7 @@ fun MovieCard(
                 Checkbox(
                     checked = watchable.watched,
                     enabled = false,
-                    onCheckedChange = {/* Do nothing */ },
+                    onCheckedChange = { /* Do nothing */ },
                     colors = CheckboxDefaults.colors(
                         disabledCheckedColor = if (watchable.favorite) MaterialTheme.colors.primary else MaterialTheme.colors.secondary,
                         disabledUncheckedColor = if (watchable.favorite) MaterialTheme.colors.primary else MaterialTheme.colors.secondary,
