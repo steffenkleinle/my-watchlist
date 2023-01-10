@@ -76,7 +76,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-            MyWatchlistTheme{
+            MyWatchlistTheme {
                 MainScreen()
             }
         }

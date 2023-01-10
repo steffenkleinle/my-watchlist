@@ -3,10 +3,6 @@ package app.mywatchlist.screens
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.Icon
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
@@ -24,9 +20,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import app.mywatchlist.R
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import app.mywatchlist.R
 import app.mywatchlist.ui.components.MovieGrid
 import app.mywatchlist.ui.viewModels.WatchablesViewModel
 
@@ -101,10 +97,12 @@ fun HomeScreen(
                     value = query ?: "",
 
                     onValueChange = { watchablesViewModel.update(it) },
-                    label = { Text(
-                        stringResource(id = R.string.search),
-                        color = MaterialTheme.colors.onBackground
-                    ) },
+                    label = {
+                        Text(
+                            stringResource(id = R.string.search),
+                            color = MaterialTheme.colors.onBackground
+                        )
+                    },
                     trailingIcon = {
                         FilledTonalIconButton(
                             onClick = { watchablesViewModel.update(null) },

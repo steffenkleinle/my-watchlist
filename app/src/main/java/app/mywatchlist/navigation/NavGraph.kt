@@ -51,7 +51,7 @@ fun SetupNavGraph(navController: NavHostController) {
         }
         composable(
             route = Screen.Share.route,
-        ){
+        ) {
             ShareScreen(
                 navController,
                 it.arguments?.getString(WATCHABLE_TO_SHARE),
