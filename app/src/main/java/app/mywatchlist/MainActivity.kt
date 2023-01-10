@@ -21,7 +21,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
-import app.mywatchlist.screens.MainScreen
+import app.mywatchlist.ui.screens.MainScreen
 import app.mywatchlist.ui.theme.MyWatchlistTheme
 import app.mywatchlist.utils.*
 import dagger.Module

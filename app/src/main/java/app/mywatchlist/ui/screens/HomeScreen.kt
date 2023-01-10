@@ -1,4 +1,4 @@
-package app.mywatchlist.screens
+package app.mywatchlist.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*

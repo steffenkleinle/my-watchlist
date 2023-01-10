@@ -1,4 +1,4 @@
-package app.mywatchlist.screens
+package app.mywatchlist.ui.screens
 
 import android.annotation.SuppressLint
 import android.app.Activity

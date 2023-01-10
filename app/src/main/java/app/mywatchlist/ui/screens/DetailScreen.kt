@@ -1,4 +1,4 @@
-package app.mywatchlist.screens
+package app.mywatchlist.ui.screens
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -23,7 +23,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.mywatchlist.R
-import app.mywatchlist.Screen
 import app.mywatchlist.data.models.Genre
 import app.mywatchlist.ui.viewModels.WatchableDetailViewModel
 import coil.compose.AsyncImage

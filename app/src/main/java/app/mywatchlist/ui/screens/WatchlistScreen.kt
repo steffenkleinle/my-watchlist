@@ -1,4 +1,4 @@
-package app.mywatchlist.screens
+package app.mywatchlist.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.LinearProgressIndicator
