@@ -34,13 +34,13 @@ data class Results<T>(
     @Json val results: T
 )
 
-private const val cacheSize = (5 * 1024 * 1024).toLong()
+private const val cacheSize = (32 * 1024 * 1024).toLong()
 private fun setupOkHttpClient(applicationContext: Context) = OkHttpClient.Builder()
     .cache(Cache(applicationContext.cacheDir, cacheSize))
     .addInterceptor { chain ->
         var request = chain.request()
         request = if (hasNetwork(applicationContext))
-            request.newBuilder().header("Cache-Control", "public, max-age=" + 5).build()
+            request.newBuilder().header("Cache-Control", "public, max-age=" + 60 * 60 * 24).build()
         else
             request.newBuilder()
                 .header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7)
@@ -106,7 +106,10 @@ class TmdbRemoteDateSource @Inject constructor(
     }
 
     suspend fun getTrending(page: Int, language: String = LANGUAGE): List<RawWatchable> =
-        rawTrending(page, language).map { it.copy(providers = getProviders(it.id)) }
+        rawTrending(page, language).map {
+            getDetail(it.id)
+            it.copy(providers = getProviders(it.id))
+        }
 
     suspend fun getDetail(id: Int, language: String = LANGUAGE): RawWatchable =
         rawDetails(id, language).copy(providers = getProviders(id))
@@ -117,19 +120,35 @@ class TmdbRemoteDateSource @Inject constructor(
         language: String = LANGUAGE,
         region: String = REGION
     ): List<RawWatchable> =
-        rawSearch(query, page, language, region).map { it.copy(providers = getProviders(it.id)) }
+        rawSearch(query, page, language, region).map {
+            getDetail(it.id)
+            it.copy(providers = getProviders(it.id))
+        }
 
     private suspend fun rawTrending(page: Int, language: String = LANGUAGE): List<RawWatchable> =
         withContext(Dispatchers.IO) {
             val response = tmdbApiService.getTrending(page, language)
-            response.body()?.results
-                ?: throw Error(response.message())
+            response.body()?.results ?: emptyList()
         }
 
     private suspend fun rawDetails(id: Int, language: String = LANGUAGE): RawWatchable =
         withContext(Dispatchers.IO) {
             val response = tmdbApiService.getDetails(id, language)
-            response.body() ?: throw Error(response.message())
+            response.body() ?: RawWatchable(
+                -1,
+                "",
+                "",
+                "",
+                "",
+                "",
+                LocalDate.now(),
+                0F,
+                0,
+                0,
+                "",
+                emptyList(),
+                null
+            )
         }
 
     private suspend fun rawSearch(
@@ -140,14 +159,12 @@ class TmdbRemoteDateSource @Inject constructor(
     ): List<RawWatchable> =
         withContext(Dispatchers.IO) {
             val response = tmdbApiService.search(query, page, language, region)
-            response.body()?.results
-                ?: throw Error(response.message())
+            response.body()?.results ?: emptyList()
         }
 
     private suspend fun getProviders(watchableId: Int): Map<String, Providers> =
         withContext(Dispatchers.IO) {
             val response = tmdbApiService.getProviders(watchableId)
-            response.body()?.results
-                ?: throw Error(response.message())
+            response.body()?.results ?: emptyMap()
         }
 }
