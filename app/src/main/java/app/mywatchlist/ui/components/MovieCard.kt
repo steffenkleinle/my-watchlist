@@ -17,8 +17,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.mywatchlist.R
-import app.mywatchlist.Screen
 import app.mywatchlist.data.models.Watchable
+import app.mywatchlist.ui.screens.Screen
 import coil.compose.AsyncImage
 
 @Composable
@@ -57,7 +57,7 @@ fun MovieCard(
                 Checkbox(
                     checked = watchable.watched,
                     enabled = false,
-                    onCheckedChange = {/* Do nothing */ },
+                    onCheckedChange = { /* Do nothing */ },
                     colors = CheckboxDefaults.colors(
                         disabledCheckedColor = if (watchable.favorite) MaterialTheme.colors.primary else MaterialTheme.colors.secondary,
                         disabledUncheckedColor = if (watchable.favorite) MaterialTheme.colors.primary else MaterialTheme.colors.secondary,

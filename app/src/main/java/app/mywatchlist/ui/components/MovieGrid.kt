@@ -1,6 +1,5 @@
 package app.mywatchlist.ui.components
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -43,7 +42,7 @@ fun MovieGrid(navController: NavController, items: LazyPagingItems<Watchable>) {
                 )
             }
         })
-    AnimatedVisibility(visible = ((items.loadState.append.toString() == ("Loading(endOfPaginationReached=false)").toString()))){
+    AnimatedVisibility(visible = ((items.loadState.append.toString() == ("Loading(endOfPaginationReached=false)").toString()))) {
         LinearProgressIndicator(
             modifier = Modifier
                 .semantics(mergeDescendants = true) {}

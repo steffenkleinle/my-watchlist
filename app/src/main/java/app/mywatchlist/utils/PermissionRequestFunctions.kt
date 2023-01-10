@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 
 fun hasContactPermission(context: Context): Boolean {
     return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) ==
-            PackageManager.PERMISSION_GRANTED;
+            PackageManager.PERMISSION_GRANTED
 }
 
 fun requestContactPermission(context: Context, activity: Activity) {
@@ -18,12 +18,12 @@ fun requestContactPermission(context: Context, activity: Activity) {
     }
 }
 
-fun hasSMSPermission(context: Context): Boolean{
+fun hasSMSPermission(context: Context): Boolean {
     return ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) ==
-            PackageManager.PERMISSION_GRANTED;
+            PackageManager.PERMISSION_GRANTED
 }
 
-fun requestSMSPermission(context: Context, activity: Activity){
+fun requestSMSPermission(context: Context, activity: Activity) {
     if (!hasSMSPermission(context)) {
         ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.SEND_SMS), 1)
     }

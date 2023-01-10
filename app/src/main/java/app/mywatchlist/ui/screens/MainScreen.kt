@@ -1,4 +1,4 @@
-package app.mywatchlist.screens
+package app.mywatchlist.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -15,9 +15,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import app.mywatchlist.BottomBarScreen
-import app.mywatchlist.Screen
-import app.mywatchlist.navigation.SetupNavGraph
+import app.mywatchlist.ui.SetupNavGraph
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")

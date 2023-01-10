@@ -1,4 +1,4 @@
-package app.mywatchlist.screens
+package app.mywatchlist.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.LinearProgressIndicator
@@ -49,16 +49,16 @@ fun Watchlist(navController: NavController, watchlistViewModel: WatchlistViewMod
                 )
             }
 
-                if (uiState.loading) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        LinearProgressIndicator(
-                            modifier = Modifier
-                                .semantics(mergeDescendants = true) {}
-                                .fillMaxWidth(),
-                        )
-                    }
-                } else {
-                    if (uiState.data.isNullOrEmpty()){
+            if (uiState.loading) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    LinearProgressIndicator(
+                        modifier = Modifier
+                            .semantics(mergeDescendants = true) {}
+                            .fillMaxWidth(),
+                    )
+                }
+            } else {
+                if (uiState.data.isNullOrEmpty()) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -71,11 +71,11 @@ fun Watchlist(navController: NavController, watchlistViewModel: WatchlistViewMod
                             fontSize = MaterialTheme.typography.h6.fontSize,
                         )
                     }
-                    }else {
-                        MovieGrid(navController, uiState.data!!)
-                    }
+                } else {
+                    MovieGrid(navController, uiState.data!!)
                 }
             }
         }
     }
+}
 

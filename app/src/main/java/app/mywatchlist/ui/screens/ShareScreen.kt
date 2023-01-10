@@ -1,4 +1,4 @@
-package app.mywatchlist.screens
+package app.mywatchlist.ui.screens
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -33,7 +33,7 @@ import app.mywatchlist.utils.requestSMSPermission
 import kotlinx.coroutines.launch
 
 @Composable
-fun ShareScreen (
+fun ShareScreen(
     navController: NavController,
     watchableTitle: String?
 ) {
@@ -43,7 +43,7 @@ fun ShareScreen (
             .fillMaxSize()
             .padding(10.dp, 10.dp, 20.dp, 70.dp),
     ) {
-        Column() {
+        Column {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -81,7 +81,7 @@ fun ShareScreen (
                     .padding(0.dp, 90.dp)
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
-            ){
+            ) {
                 contactPicker(watchableTitle)
             }
         }
@@ -96,7 +96,7 @@ fun contactPicker(
 ) {
 
     var contactName by remember { mutableStateOf("") }
-    var contactNumber by remember {  mutableStateOf("")}
+    var contactNumber by remember { mutableStateOf("") }
     val message = stringResource(R.string.share_sms, contactName, watchableTitle.toString())
     val activity = LocalContext.current as Activity
 
@@ -123,7 +123,8 @@ fun contactPicker(
                     )
                     if (phones != null) {
                         while (phones.moveToNext()) {
-                            number = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                            number =
+                                phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
                             Log.d("Number", number)
                         }
                         phones.close()
@@ -183,7 +184,7 @@ fun contactPicker(
             color = MaterialTheme.colors.onBackground,
         )
 
-        if (!contactName.isNullOrEmpty()){
+        if (!contactName.isNullOrEmpty()) {
             Button(
                 modifier = Modifier.padding(0.dp, 20.dp),
                 onClick = {
@@ -216,11 +217,13 @@ fun contactPicker(
             }
             SnackbarHost(
                 hostState = snackbarHostState,
-                snackbar = { SnackbarData -> Snackbar(
-                    snackbarData = SnackbarData,
-                    containerColor = MaterialTheme.colors.onPrimary,
-                    contentColor = MaterialTheme.colors.onBackground
-                ) }
+                snackbar = { SnackbarData ->
+                    Snackbar(
+                        snackbarData = SnackbarData,
+                        containerColor = MaterialTheme.colors.onPrimary,
+                        contentColor = MaterialTheme.colors.onBackground
+                    )
+                }
             )
         }
     }
