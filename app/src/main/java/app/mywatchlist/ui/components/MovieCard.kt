@@ -2,7 +2,8 @@ package app.mywatchlist.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Checkbox
@@ -46,21 +47,22 @@ fun MovieCard(
         } else {
             Box(
                 contentAlignment = Alignment.TopEnd
-            ){
+            ) {
                 AsyncImage(
                     model = "https://image.tmdb.org/t/p/original/" + watchable.posterPath,
                     contentDescription = watchable.title,
                     placeholder = painterResource(R.drawable.blank_movie_poster),
+                    error = painterResource(R.drawable.blank_movie_poster),
                 )
                 Checkbox(
                     checked = watchable.watched,
                     enabled = false,
-                    onCheckedChange = {/* Do nothing */},
+                    onCheckedChange = {/* Do nothing */ },
                     colors = CheckboxDefaults.colors(
-                        disabledCheckedColor = if (watchable.favorite)  MaterialTheme.colors.primary else MaterialTheme.colors.secondary,
+                        disabledCheckedColor = if (watchable.favorite) MaterialTheme.colors.primary else MaterialTheme.colors.secondary,
                         disabledUncheckedColor = if (watchable.favorite) MaterialTheme.colors.primary else MaterialTheme.colors.secondary,
                         checkmarkColor = MaterialTheme.colors.background
-                ),
+                    ),
                 )
             }
         }
