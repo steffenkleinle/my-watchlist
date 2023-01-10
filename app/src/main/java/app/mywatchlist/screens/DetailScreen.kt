@@ -64,7 +64,7 @@ fun DetailScreen(
         }
     } else {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            Box() {
+            Box {
                 if (watchable.data?.backdropPath.isNullOrEmpty()) {
                     Box(
                         contentAlignment = Alignment.Center
@@ -173,7 +173,7 @@ fun DetailScreen(
                             ),
                             color = MaterialTheme.colors.onSurface
                         )
-                        LazyRow() {
+                        LazyRow {
                             itemsIndexed(genreList) { index, item ->
                                 AssistChip(
                                     modifier = Modifier

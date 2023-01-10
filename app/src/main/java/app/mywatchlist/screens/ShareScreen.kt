@@ -43,7 +43,7 @@ fun ShareScreen(
             .fillMaxSize()
             .padding(10.dp, 10.dp, 20.dp, 70.dp),
     ) {
-        Column() {
+        Column {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
