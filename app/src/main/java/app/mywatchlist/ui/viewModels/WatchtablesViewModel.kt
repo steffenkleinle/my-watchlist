@@ -1,5 +1,6 @@
 package app.mywatchlist.ui.viewModels
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
@@ -13,15 +14,17 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 private const val PAGE_SIZE = 20
+private const val QUERY_KEY = "query"
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class WatchablesViewModel @Inject constructor(
     private val repository: WatchablesRepository,
     private val favoritesRepository: FavoritesRepository,
-    private val watchedRepository: WatchedRepository
+    private val watchedRepository: WatchedRepository,
+    private val state: SavedStateHandle
 ) : ViewModel() {
-    private val _queryUiState = MutableStateFlow<String?>(null)
+    private val _queryUiState = MutableStateFlow<String?>(state[QUERY_KEY])
     val queryUiState = _queryUiState.asStateFlow()
 
     val items = _queryUiState.flatMapLatest { query ->
@@ -39,6 +42,7 @@ class WatchablesViewModel @Inject constructor(
     }.cachedIn(viewModelScope)
 
     fun update(query: String?) {
+        state[QUERY_KEY] = query
         val previous = this.queryUiState.value
 
         if (query != previous) {
