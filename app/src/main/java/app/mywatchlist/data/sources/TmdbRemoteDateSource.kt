@@ -40,7 +40,7 @@ private fun setupOkHttpClient(applicationContext: Context) = OkHttpClient.Builde
     .addInterceptor { chain ->
         var request = chain.request()
         request = if (hasNetwork(applicationContext))
-            request.newBuilder().header("Cache-Control", "public, max-age=" + 5).build()
+            request.newBuilder().header("Cache-Control", "public, max-age=" + 60 * 60 * 24).build()
         else
             request.newBuilder()
                 .header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7)
