@@ -33,7 +33,7 @@ class WatchableDetailViewModel @Inject constructor(
         }
     }
 
-    fun fetch(id: Int) {
+    private fun fetch(id: Int) {
         fetchJob?.cancel()
         fetchJob = viewModelScope.launch {
             _uiState.update {
